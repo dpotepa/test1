@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 import api from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import SessionHistory from '../components/SessionHistory';
@@ -8,7 +7,6 @@ import SessionHistory from '../components/SessionHistory';
 export default function HistoryPage() {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const navigate = useNavigate();
   const [sessions, setSessions] = useState<any[]>([]);
   const [selectedSession, setSelectedSession] = useState<number | null>(null);
   const [rounds, setRounds] = useState<any[]>([]);

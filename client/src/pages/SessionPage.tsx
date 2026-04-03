@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import api from '../api/client';
 import { useAuth } from '../context/AuthContext';
-import { connectSocket, disconnectSocket } from '../socket/socket';
+import { connectSocket } from '../socket/socket';
 import QuestionPicker from '../components/QuestionPicker';
 import AnswerForm from '../components/AnswerForm';
 import AnswerReveal from '../components/AnswerReveal';

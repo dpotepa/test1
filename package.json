@@ -11,6 +11,9 @@
     "start": "cd server && npx tsx src/index.ts",
     "postdeploy": "cd server && npx tsx migrations/run.ts && npx tsx src/seed/questions.ts"
   },
+  "engines": {
+    "node": ">=20"
+  },
   "devDependencies": {
     "concurrently": "^8.2.2"
   }
