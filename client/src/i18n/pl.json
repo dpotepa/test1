@@ -1,0 +1,76 @@
+{
+  "app": {
+    "name": "n2mu",
+    "fullName": "nice to meet you",
+    "tagline": "Poznajcie się naprawdę",
+    "description": "Głębokie pytania dla par, przyjaciół, dzieci i rodziców. Wybieracie pytanie, odpowiadacie szczerze — i poznajesz drugą osobę z zupełnie nowej strony."
+  },
+  "nav": {
+    "lobby": "Sesje",
+    "history": "Historia",
+    "logout": "Wyloguj"
+  },
+  "auth": {
+    "login": "Zaloguj się",
+    "register": "Zarejestruj się",
+    "username": "Nazwa użytkownika",
+    "password": "Hasło",
+    "displayName": "Imię / pseudonim",
+    "noAccount": "Nie masz konta?",
+    "hasAccount": "Masz już konto?",
+    "loginAction": "Zaloguj",
+    "registerAction": "Utwórz konto"
+  },
+  "lobby": {
+    "title": "Twoje sesje",
+    "createSession": "Nowa sesja",
+    "joinSession": "Dołącz do sesji",
+    "joinPlaceholder": "Wklej kod zaproszenia...",
+    "join": "Dołącz",
+    "waiting": "Czeka na partnera",
+    "active": "Aktywna",
+    "archived": "Zakończona",
+    "noSessions": "Nie masz jeszcze żadnych sesji. Utwórz nową!",
+    "withPartner": "z"
+  },
+  "session": {
+    "pickQuestion": "Wybierz pytanie",
+    "newQuestions": "Pokaż nowe pytania",
+    "waitingForPartner": "Czekam na partnera...",
+    "waitingForAnswer": "Partner jeszcze odpowiada...",
+    "yourAnswer": "Twoja odpowiedź",
+    "partnerAnswer": "Odpowiedź partnera",
+    "answerPlaceholder": "Napisz swoją szczerą odpowiedź...",
+    "send": "Wyślij",
+    "answered": "Odpowiedziano!",
+    "photo": "Zdjęcie",
+    "video": "Film",
+    "text": "Tekst",
+    "takePhoto": "Zrób zdjęcie",
+    "recordVideo": "Nagraj film",
+    "depth": {
+      "1": "Lekkie",
+      "2": "Średnie",
+      "3": "Głębokie"
+    },
+    "nextQuestion": "Następne pytanie",
+    "inviteCode": "Kod zaproszenia",
+    "copyLink": "Kopiuj link",
+    "copied": "Skopiowano!",
+    "partnerOnline": "Online",
+    "partnerOffline": "Offline",
+    "noActiveRound": "Wybierz pytanie, żeby zacząć!",
+    "history": "Historia odpowiedzi"
+  },
+  "history": {
+    "title": "Historia",
+    "noHistory": "Brak historii odpowiedzi",
+    "round": "Runda",
+    "viewAll": "Zobacz wszystkie"
+  },
+  "common": {
+    "loading": "Ładowanie...",
+    "error": "Wystąpił błąd",
+    "back": "Wróć"
+  }
+}

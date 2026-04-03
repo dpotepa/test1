@@ -1,0 +1,76 @@
+{
+  "app": {
+    "name": "n2mu",
+    "fullName": "nice to meet you",
+    "tagline": "Truly get to know each other",
+    "description": "Deep questions for couples, friends, kids and parents. Pick a question, answer honestly — and discover the other person from a whole new side."
+  },
+  "nav": {
+    "lobby": "Sessions",
+    "history": "History",
+    "logout": "Logout"
+  },
+  "auth": {
+    "login": "Log in",
+    "register": "Sign up",
+    "username": "Username",
+    "password": "Password",
+    "displayName": "Display name",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "loginAction": "Log in",
+    "registerAction": "Create account"
+  },
+  "lobby": {
+    "title": "Your sessions",
+    "createSession": "New session",
+    "joinSession": "Join session",
+    "joinPlaceholder": "Paste invite code...",
+    "join": "Join",
+    "waiting": "Waiting for partner",
+    "active": "Active",
+    "archived": "Archived",
+    "noSessions": "No sessions yet. Create one!",
+    "withPartner": "with"
+  },
+  "session": {
+    "pickQuestion": "Pick a question",
+    "newQuestions": "Show new questions",
+    "waitingForPartner": "Waiting for partner...",
+    "waitingForAnswer": "Partner is still answering...",
+    "yourAnswer": "Your answer",
+    "partnerAnswer": "Partner's answer",
+    "answerPlaceholder": "Write your honest answer...",
+    "send": "Send",
+    "answered": "Answered!",
+    "photo": "Photo",
+    "video": "Video",
+    "text": "Text",
+    "takePhoto": "Take photo",
+    "recordVideo": "Record video",
+    "depth": {
+      "1": "Light",
+      "2": "Medium",
+      "3": "Deep"
+    },
+    "nextQuestion": "Next question",
+    "inviteCode": "Invite code",
+    "copyLink": "Copy link",
+    "copied": "Copied!",
+    "partnerOnline": "Online",
+    "partnerOffline": "Offline",
+    "noActiveRound": "Pick a question to start!",
+    "history": "Answer history"
+  },
+  "history": {
+    "title": "History",
+    "noHistory": "No answer history",
+    "round": "Round",
+    "viewAll": "View all"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "back": "Back"
+  }
+}
