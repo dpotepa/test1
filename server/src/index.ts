@@ -16,13 +16,13 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: config.clientUrl,
+    origin: config.clientUrl || true,
     methods: ['GET', 'POST'],
   },
 });
 
 // Middleware
-app.use(cors({ origin: config.clientUrl }));
+app.use(cors({ origin: config.clientUrl || true }));
 app.use(express.json());
 
 // Static uploads
@@ -40,9 +40,16 @@ app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok' });
 });
 
+// Serve built frontend in production
+const clientDist = path.resolve(__dirname, '../../client/dist');
+app.use(express.static(clientDist));
+app.get('*', (_req, res) => {
+  res.sendFile(path.join(clientDist, 'index.html'));
+});
+
 // Socket.io
 setupSocket(io);
 
-server.listen(config.port, () => {
+server.listen(config.port, '0.0.0.0', () => {
   console.log(`Server running on port ${config.port}`);
 });

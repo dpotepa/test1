@@ -133,7 +133,10 @@ const questions: [string, string, number][] = [
 ];
 
 async function seed() {
-  const pool = new Pool({ connectionString: databaseUrl });
+  const pool = new Pool({
+    connectionString: databaseUrl,
+    ssl: databaseUrl.includes('localhost') ? false : { rejectUnauthorized: false },
+  });
 
   try {
     console.log('Seeding database...');

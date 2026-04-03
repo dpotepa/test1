@@ -8,7 +8,10 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 const databaseUrl = process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/questions_app';
 
 async function runMigrations() {
-  const pool = new Pool({ connectionString: databaseUrl });
+  const pool = new Pool({
+    connectionString: databaseUrl,
+    ssl: databaseUrl.includes('localhost') ? false : { rejectUnauthorized: false },
+  });
 
   try {
     await pool.query(`

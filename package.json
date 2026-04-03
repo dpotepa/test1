@@ -1,5 +1,5 @@
 {
-  "name": "two-player-questions",
+  "name": "n2mu",
   "private": true,
   "scripts": {
     "dev:server": "cd server && npm run dev",
@@ -7,7 +7,9 @@
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
     "migrate": "cd server && npm run migrate",
     "seed": "cd server && npm run seed",
-    "build": "cd client && npm run build"
+    "build": "cd client && npm install && npm run build && cd ../server && npm install",
+    "start": "cd server && npx tsx src/index.ts",
+    "postdeploy": "cd server && npx tsx migrations/run.ts && npx tsx src/seed/questions.ts"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
