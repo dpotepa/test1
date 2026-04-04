@@ -154,6 +154,7 @@ export default function LobbyPage() {
                 const partnerName = session.user1_id === user?.id
                   ? session.user2_name
                   : session.user1_name;
+                const isPartySession = session.mode === 'party';
 
                 return (
                   <button
@@ -164,9 +165,11 @@ export default function LobbyPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="font-medium text-warm-700">
-                          {partnerName
-                            ? `${t('lobby.withPartner')} ${partnerName}`
-                            : t('lobby.waiting')
+                          {isPartySession
+                            ? `${t('lobby.party')} · ${session.participant_count || 1} ${t('lobby.players')}`
+                            : partnerName
+                              ? `${t('lobby.withPartner')} ${partnerName}`
+                              : t('lobby.waiting')
                           }
                         </p>
                         <p className="text-xs text-warm-400 mt-1">
@@ -174,11 +177,6 @@ export default function LobbyPage() {
                         </p>
                       </div>
                       <div className="flex items-center gap-2">
-                        {session.mode === 'party' && (
-                          <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-warm-100 text-warm-600 border border-warm-200">
-                            {t('lobby.party')}
-                          </span>
-                        )}
                         {statusBadge(session.status)}
                       </div>
                     </div>

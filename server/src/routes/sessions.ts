@@ -46,6 +46,18 @@ router.post('/join/:inviteCode', authenticateToken, async (req: AuthRequest, res
     const s = session.rows[0];
 
     if (s.mode === 'party') {
+      // Don't allow joining active/archived party sessions
+      if (s.status !== 'waiting') {
+        // If already a participant, just let them view
+        const alreadyIn = await query(
+          'SELECT id FROM session_participants WHERE session_id = $1 AND user_id = $2',
+          [s.id, req.userId]
+        );
+        if (alreadyIn.rows.length > 0) {
+          return res.json(s);
+        }
+        return res.status(400).json({ error: 'Gra już się rozpoczęła' });
+      }
       // Party mode — add to participants if not already there
       const existing = await query(
         'SELECT id FROM session_participants WHERE session_id = $1 AND user_id = $2',
@@ -94,6 +106,13 @@ router.post('/:id/start', authenticateToken, async (req: AuthRequest, res: Respo
     const s = session.rows[0];
     if (s.user1_id !== req.userId) return res.status(403).json({ error: 'Tylko host może rozpocząć grę' });
     if (s.mode !== 'party') return res.status(400).json({ error: 'Nie dotyczy trybu duo' });
+    const participantCount = await query(
+      'SELECT COUNT(*) as count FROM session_participants WHERE session_id = $1',
+      [id]
+    );
+    if (parseInt(participantCount.rows[0].count, 10) < 2) {
+      return res.status(400).json({ error: 'Potrzeba minimum 2 graczy' });
+    }
     await query("UPDATE sessions SET status = 'active' WHERE id = $1", [id]);
     res.json({ ok: true });
   } catch (err) {
@@ -107,7 +126,8 @@ router.get('/', authenticateToken, async (req: AuthRequest, res: Response) => {
     const result = await query(
       `SELECT DISTINCT s.*,
         u1.display_name as user1_name,
-        u2.display_name as user2_name
+        u2.display_name as user2_name,
+        (SELECT COUNT(*) FROM session_participants sp2 WHERE sp2.session_id = s.id) as participant_count
       FROM sessions s
       JOIN users u1 ON s.user1_id = u1.id
       LEFT JOIN users u2 ON s.user2_id = u2.id

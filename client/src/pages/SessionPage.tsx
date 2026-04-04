@@ -71,13 +71,18 @@ export default function SessionPage() {
       try {
         const res = await api.get(`/sessions/${id}`);
         const fresh = res.data;
-        if (fresh.status !== 'waiting' || fresh.user2_id) {
+        // Duo: update when partner joins or status changes
+        // Party: update when participants change or status changes
+        const changed = fresh.status !== session.status
+          || fresh.user2_id !== session.user2_id
+          || (fresh.participants?.length || 0) !== (session.participants?.length || 0);
+        if (changed) {
           setSession(fresh);
         }
       } catch {}
     }, 3000);
     return () => clearInterval(interval);
-  }, [id, session?.status]);
+  }, [id, session?.status, session?.user2_id, session?.participants?.length]);
 
   // Request notification permission on mount
   useEffect(() => {
@@ -104,8 +109,9 @@ export default function SessionPage() {
         setOnlineUsers(prev => new Set([...prev, data.user.id]));
         setSession((s: any) => {
           if (!s) return s;
-          const updated = { ...s, status: s.mode === 'party' ? s.status : 'active' };
-          if (!isParty && data.user) {
+          if (s.mode === 'party') return s; // handled by refetch below
+          const updated = { ...s, status: 'active' };
+          if (data.user) {
             if (s.user1_id === user?.id) {
               updated.user2_name = data.user.displayName;
               updated.user2_id = data.user.id;
@@ -114,11 +120,10 @@ export default function SessionPage() {
               updated.user1_id = data.user.id;
             }
           }
-          if (s.mode === 'party') {
-            api.get(`/sessions/${id}`).then((res) => setSession(res.data));
-          }
           return updated;
         });
+        // For party mode, refetch full session with participants
+        api.get(`/sessions/${sessionIdRef.current}`).then((res) => setSession(res.data));
       }
     });
 
