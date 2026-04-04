@@ -268,6 +268,7 @@ export function setupSocket(io: Server) {
             roundId,
             roundCount: totalRevealed,
             answers: answers.rows.map((a: any) => ({
+              id: a.id,
               userId: a.user_id,
               userName: a.user_name,
               answerType: a.answer_type,
@@ -286,6 +287,54 @@ export function setupSocket(io: Server) {
         }
       } catch (err) {
         console.error('round:answer error:', err);
+      }
+    });
+
+    socket.on('reaction:toggle', async ({ answerId, emoji, sessionId }: { answerId: number; emoji: string; sessionId: number }) => {
+      try {
+        // Check if reaction already exists
+        const existing = await query(
+          'SELECT id FROM reactions WHERE answer_id = $1 AND user_id = $2',
+          [answerId, socket.userId]
+        );
+
+        if (existing.rows.length > 0) {
+          // Check if same emoji → remove, different → update
+          const current = await query(
+            'SELECT emoji FROM reactions WHERE answer_id = $1 AND user_id = $2',
+            [answerId, socket.userId]
+          );
+          if (current.rows[0].emoji === emoji) {
+            await query('DELETE FROM reactions WHERE answer_id = $1 AND user_id = $2', [answerId, socket.userId]);
+          } else {
+            await query('UPDATE reactions SET emoji = $3 WHERE answer_id = $1 AND user_id = $2', [answerId, socket.userId, emoji]);
+          }
+        } else {
+          await query(
+            'INSERT INTO reactions (answer_id, user_id, emoji) VALUES ($1, $2, $3)',
+            [answerId, socket.userId, emoji]
+          );
+        }
+
+        // Fetch all reactions for this answer
+        const reactions = await query(
+          `SELECT r.emoji, r.user_id, u.display_name as user_name
+           FROM reactions r JOIN users u ON r.user_id = u.id
+           WHERE r.answer_id = $1`,
+          [answerId]
+        );
+
+        const room = `session:${sessionId}`;
+        io.to(room).emit('reaction:updated', {
+          answerId,
+          reactions: reactions.rows.map((r: any) => ({
+            emoji: r.emoji,
+            userId: r.user_id,
+            userName: r.user_name,
+          })),
+        });
+      } catch (err) {
+        console.error('reaction:toggle error:', err);
       }
     });
 

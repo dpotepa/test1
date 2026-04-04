@@ -165,6 +165,19 @@ export default function SessionPage() {
       api.get(`/sessions/${id}/rounds`).then((res) => setRounds(res.data));
     });
 
+    socket.on('reaction:updated', (data: any) => {
+      const { answerId, reactions } = data;
+      setRevealedAnswers(prev => prev.map(a =>
+        a.id === answerId ? { ...a, reactions } : a
+      ));
+      setRounds(prev => prev.map(round => ({
+        ...round,
+        answers: round.answers?.map((a: any) =>
+          a.id === answerId ? { ...a, reactions } : a
+        ) || [],
+      })));
+    });
+
     const handleBeforeUnload = () => {
       socket.emit('session:leave', { sessionId });
     };
@@ -180,6 +193,7 @@ export default function SessionPage() {
       socket.off('round:started');
       socket.off('round:partner-answered');
       socket.off('round:revealed');
+      socket.off('reaction:updated');
     };
   }, [id, session?.id]);
 
@@ -195,6 +209,11 @@ export default function SessionPage() {
     socket.emit('round:answer', { roundId: currentRound.id, answerType, text, mediaUrl });
     setHasAnswered(true);
   }, [currentRound]);
+
+  const handleReact = useCallback((answerId: number, emoji: string) => {
+    const socket = connectSocket();
+    socket.emit('reaction:toggle', { answerId, emoji, sessionId: parseInt(id!) });
+  }, [id]);
 
   const handleNextQuestion = () => {
     setRoundState('idle');
@@ -379,6 +398,7 @@ export default function SessionPage() {
                   answers={revealedAnswers}
                   categoryName={currentQuestion.category_name}
                   depthLevel={currentQuestion.depth_level}
+                  onReact={handleReact}
                 />
                 <button
                   onClick={handleNextQuestion}
@@ -393,7 +413,7 @@ export default function SessionPage() {
 
         {rounds.length > 0 && (
           <div className="animate-fade-in">
-            <SessionHistory rounds={rounds} />
+            <SessionHistory rounds={rounds} onReact={handleReact} />
           </div>
         )}
       </div>

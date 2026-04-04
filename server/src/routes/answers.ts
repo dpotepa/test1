@@ -43,7 +43,19 @@ router.get('/sessions/:sessionId/rounds', authenticateToken, async (req: AuthReq
             ORDER BY a.created_at`,
             [round.id]
           );
-          return { ...round, answers: answers.rows };
+          // Include reactions for each answer
+          const answersWithReactions = await Promise.all(
+            answers.rows.map(async (a: any) => {
+              const reactions = await query(
+                `SELECT r.emoji, r.user_id, u.display_name as user_name
+                 FROM reactions r JOIN users u ON r.user_id = u.id
+                 WHERE r.answer_id = $1`,
+                [a.id]
+              );
+              return { ...a, reactions: reactions.rows };
+            })
+          );
+          return { ...round, answers: answersWithReactions };
         }
         if (round.status === 'answering') {
           const myAnswer = await query(

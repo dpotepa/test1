@@ -12,9 +12,10 @@ interface Round {
 
 interface Props {
   rounds: Round[];
+  onReact?: (answerId: number, emoji: string) => void;
 }
 
-export default function SessionHistory({ rounds }: Props) {
+export default function SessionHistory({ rounds, onReact }: Props) {
   const { t } = useTranslation();
 
   const revealedRounds = rounds.filter((r) => r.status === 'revealed');
@@ -38,15 +39,18 @@ export default function SessionHistory({ rounds }: Props) {
             key={round.id}
             questionText={round.question_text}
             answers={round.answers.map((a: any) => ({
+              id: a.id,
               userId: a.user_id,
               userName: a.user_name,
               answerType: a.answer_type,
               text: a.text,
               mediaUrl: a.media_url,
               createdAt: a.created_at,
+              reactions: a.reactions,
             }))}
             categoryName={round.category_name}
             depthLevel={round.depth_level}
+            onReact={onReact}
           />
         ))}
       </div>
