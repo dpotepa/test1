@@ -41,6 +41,7 @@ export default function SessionPage() {
 
   useEffect(() => { sessionIdRef.current = id; }, [id]);
 
+  // Load session data
   useEffect(() => {
     if (!id) return;
     api.get(`/sessions/${id}`).then((res) => setSession(res.data)).catch(() => navigate('/'));
@@ -62,6 +63,21 @@ export default function SessionPage() {
       }
     });
   }, [id]);
+
+  // Poll for session updates while waiting (fallback if socket event is missed)
+  useEffect(() => {
+    if (!id || !session || session.status !== 'waiting') return;
+    const interval = setInterval(async () => {
+      try {
+        const res = await api.get(`/sessions/${id}`);
+        const fresh = res.data;
+        if (fresh.status !== 'waiting' || fresh.user2_id) {
+          setSession(fresh);
+        }
+      } catch {}
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [id, session?.status]);
 
   // Request notification permission on mount
   useEffect(() => {
