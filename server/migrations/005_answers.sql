@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS answers (
     id          SERIAL PRIMARY KEY,
     round_id    INT NOT NULL REFERENCES rounds(id),
     user_id     INT NOT NULL REFERENCES users(id),
-    answer_type VARCHAR(10) DEFAULT 'text' CHECK (answer_type IN ('text', 'photo', 'video')),
+    answer_type VARCHAR(10) DEFAULT 'text' CHECK (answer_type IN ('text', 'photo', 'video', 'voice')),
     text        TEXT,
     media_url   VARCHAR(500),
     created_at  TIMESTAMPTZ DEFAULT NOW(),
