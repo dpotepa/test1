@@ -277,6 +277,21 @@ export function setupSocket(io: Server) {
               createdAt: a.created_at,
             })),
           });
+          // Also emit directly to the answering socket in case they're not in the room yet
+          // (race condition: socket reconnects, answer is processed before session:join)
+          socket.emit('round:revealed', {
+            roundId,
+            roundCount: totalRevealed,
+            answers: answers.rows.map((a: any) => ({
+              id: a.id,
+              userId: a.user_id,
+              userName: a.user_name,
+              answerType: a.answer_type,
+              text: a.text,
+              mediaUrl: a.media_url,
+              createdAt: a.created_at,
+            })),
+          });
         } else {
           // Not everyone answered — notify others (no content!)
           socket.to(room).emit('round:partner-answered', {

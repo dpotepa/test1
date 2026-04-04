@@ -89,6 +89,31 @@ export default function SessionPage() {
     requestNotificationPermission();
   }, []);
 
+  // Fallback: poll round status when user has answered but round hasn't been revealed
+  // (handles race condition where round:revealed socket event is missed)
+  useEffect(() => {
+    if (!id || !currentRound || roundState !== 'answering' || !hasAnswered) return;
+    const interval = setInterval(async () => {
+      try {
+        const res = await api.get(`/rounds/${currentRound.id}`);
+        if (res.data.status === 'revealed' && res.data.answers?.length > 0) {
+          setRevealedAnswers(res.data.answers.map((a: any) => ({
+            id: a.id,
+            userId: a.user_id,
+            userName: a.user_name,
+            answerType: a.answer_type,
+            text: a.text,
+            mediaUrl: a.media_url,
+            createdAt: a.created_at,
+          })));
+          setRoundState('revealed');
+          api.get(`/sessions/${id}/rounds`).then((r) => setRounds(r.data));
+        }
+      } catch {}
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [id, currentRound?.id, roundState, hasAnswered]);
+
   useEffect(() => {
     if (!id || !session) return;
 
@@ -123,7 +148,9 @@ export default function SessionPage() {
           return updated;
         });
         // For party mode, refetch full session with participants
-        api.get(`/sessions/${sessionIdRef.current}`).then((res) => setSession(res.data));
+        if (session?.mode === 'party') {
+          api.get(`/sessions/${sessionIdRef.current}`).then((res) => setSession(res.data));
+        }
       }
     });
 
