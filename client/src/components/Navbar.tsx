@@ -13,12 +13,12 @@ export default function Navbar() {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-paper-dark/95 backdrop-blur-xl border-t-2 border-dashed border-zinc-700/50 z-50 safe-bottom">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-paper-border z-50 safe-bottom">
       <div className="max-w-lg mx-auto flex items-center justify-around py-2">
         <button
           onClick={() => navigate('/')}
           className={`flex flex-col items-center gap-1 px-4 py-2 text-xs font-medium transition-colors ${
-            isActive('/') ? 'text-violet-400' : 'text-zinc-600'
+            isActive('/') ? 'text-sage-600' : 'text-warm-400'
           }`}
         >
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -30,7 +30,7 @@ export default function Navbar() {
         <button
           onClick={() => navigate('/history')}
           className={`flex flex-col items-center gap-1 px-4 py-2 text-xs font-medium transition-colors ${
-            isActive('/history') ? 'text-violet-400' : 'text-zinc-600'
+            isActive('/history') ? 'text-sage-600' : 'text-warm-400'
           }`}
         >
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -41,7 +41,7 @@ export default function Navbar() {
 
         <button
           onClick={() => { logout(); navigate('/login'); }}
-          className="flex flex-col items-center gap-1 px-4 py-2 text-xs font-medium text-zinc-600 transition-colors"
+          className="flex flex-col items-center gap-1 px-4 py-2 text-xs font-medium text-warm-400 transition-colors"
         >
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />

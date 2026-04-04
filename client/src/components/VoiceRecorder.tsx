@@ -98,8 +98,8 @@ export default function VoiceRecorder({ onRecorded, disabled }: Props) {
   if (uploading) {
     return (
       <div className="flex items-center justify-center gap-3 py-4">
-        <div className="w-5 h-5 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
-        <span className="text-zinc-400 text-sm">{t('session.uploading')}</span>
+        <div className="w-5 h-5 border-2 border-sage-500 border-t-transparent rounded-full animate-spin" />
+        <span className="text-warm-500 text-sm">{t('session.uploading')}</span>
       </div>
     );
   }
@@ -109,7 +109,7 @@ export default function VoiceRecorder({ onRecorded, disabled }: Props) {
       {recording ? (
         <button
           onClick={stopRecording}
-          className="flex-1 flex items-center justify-center gap-3 py-3.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 font-medium rounded-xl active:bg-rose-500/20 transition-all"
+          className="flex-1 flex items-center justify-center gap-3 py-3.5 bg-rose-50 text-rose-500 border border-rose-200 font-medium rounded-xl active:bg-rose-100 transition-all"
         >
           <div className="w-3 h-3 rounded-full bg-rose-500 animate-pulse" />
           <span>{formatTime(seconds)} / {formatTime(MAX_SECONDS)}</span>
@@ -119,7 +119,7 @@ export default function VoiceRecorder({ onRecorded, disabled }: Props) {
         <button
           onClick={startRecording}
           disabled={disabled}
-          className="flex-1 flex items-center justify-center gap-2 py-3.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 font-medium rounded-xl active:bg-rose-500/20 transition-all disabled:opacity-30"
+          className="flex-1 flex items-center justify-center gap-2 py-3.5 bg-white text-warm-600 border border-paper-border font-medium rounded-xl active:bg-warm-50 transition-all disabled:opacity-30"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />

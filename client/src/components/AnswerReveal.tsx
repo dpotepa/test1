@@ -18,9 +18,9 @@ interface Props {
 }
 
 const depthColors: Record<number, string> = {
-  1: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20',
-  2: 'bg-amber-500/10 text-amber-400 border border-amber-500/20',
-  3: 'bg-rose-500/10 text-rose-400 border border-rose-500/20',
+  1: 'bg-sage-50 text-sage-600 border border-sage-200',
+  2: 'bg-amber-50 text-amber-600 border border-amber-200',
+  3: 'bg-rose-50 text-rose-500 border border-rose-200',
 };
 
 export default function AnswerReveal({ questionText, answers, categoryName, depthLevel }: Props) {
@@ -39,7 +39,7 @@ export default function AnswerReveal({ questionText, answers, categoryName, dept
         <audio src={answer.mediaUrl} controls className="w-full mt-1" style={{ height: 40 }} />
       );
     }
-    return <p className="text-zinc-300 leading-relaxed">{answer.text}</p>;
+    return <p className="text-warm-700 leading-relaxed">{answer.text}</p>;
   };
 
   return (
@@ -50,8 +50,8 @@ export default function AnswerReveal({ questionText, answers, categoryName, dept
             {t(`session.depth.${depthLevel}`)}
           </span>
         )}
-        {categoryName && <span className="text-xs text-zinc-600">{categoryName}</span>}
-        <p className="text-zinc-200 font-hand text-lg mt-2 leading-relaxed">{questionText}</p>
+        {categoryName && <span className="text-xs text-warm-400">{categoryName}</span>}
+        <p className="text-warm-800 font-medium mt-2 leading-relaxed">{questionText}</p>
       </div>
 
       <div className="space-y-3">
@@ -60,11 +60,11 @@ export default function AnswerReveal({ questionText, answers, categoryName, dept
             key={answer.userId}
             className={`rounded-xl p-4 ${
               answer.userId === user?.id
-                ? 'bg-violet-500/10 border border-violet-500/20'
-                : 'bg-zinc-800/50 border border-zinc-700/50'
+                ? 'bg-sage-50 border border-sage-200'
+                : 'bg-warm-50 border border-warm-200'
             }`}
           >
-            <p className="text-xs font-medium text-zinc-500 mb-2">
+            <p className="text-xs font-medium text-warm-400 mb-2">
               {answer.userId === user?.id ? t('session.yourAnswer') : answer.userName}
             </p>
             {renderAnswer(answer)}

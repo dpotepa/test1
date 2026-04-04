@@ -42,20 +42,19 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-dvh flex flex-col items-center justify-center px-6 bg-zinc-950 notebook-bg">
+    <div className="min-h-dvh flex flex-col items-center justify-center px-6 notebook-bg">
       <div className="w-full max-w-sm animate-slide-up">
         <div className="text-center mb-10">
-          {/* Logo */}
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl mb-5 animate-float bg-gradient-to-br from-violet-600 to-fuchsia-600 shadow-2xl shadow-violet-500/30">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl mb-5 animate-float bg-sage-500 shadow-lg shadow-sage-500/20">
             <span className="text-3xl font-black text-white tracking-tighter">n2</span>
           </div>
-          <h1 className="text-5xl font-black text-white tracking-tight">{t('app.name')}</h1>
-          <p className="text-2xl font-hand text-violet-400 mt-1">{t('app.fullName')}</p>
-          <p className="text-zinc-500 mt-4 text-sm leading-relaxed max-w-xs mx-auto">{t('app.description')}</p>
+          <h1 className="text-5xl font-black text-warm-800 tracking-tight">{t('app.name')}</h1>
+          <p className="text-2xl font-hand text-sage-500 mt-1">{t('app.fullName')}</p>
+          <p className="text-warm-500 mt-4 text-sm leading-relaxed max-w-xs mx-auto">{t('app.description')}</p>
         </div>
 
         {error && (
-          <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm rounded-xl p-3 text-center animate-slide-down mb-4">{error}</div>
+          <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl p-3 text-center animate-slide-down mb-4">{error}</div>
         )}
 
         {!showGuest ? (
@@ -66,7 +65,7 @@ export default function LoginPage() {
                 placeholder={t('auth.username')}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full px-4 py-3.5 bg-zinc-900 border border-zinc-800 rounded-xl text-base text-white placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all"
+                className="w-full px-4 py-3.5 bg-white border border-paper-border rounded-xl text-base text-warm-800 placeholder-warm-400 focus:outline-none focus:ring-2 focus:ring-sage-400/50 focus:border-sage-400/50 transition-all"
                 autoComplete="username"
               />
 
@@ -75,14 +74,14 @@ export default function LoginPage() {
                 placeholder={t('auth.password')}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3.5 bg-zinc-900 border border-zinc-800 rounded-xl text-base text-white placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all"
+                className="w-full px-4 py-3.5 bg-white border border-paper-border rounded-xl text-base text-warm-800 placeholder-warm-400 focus:outline-none focus:ring-2 focus:ring-sage-400/50 focus:border-sage-400/50 transition-all"
                 autoComplete="current-password"
               />
 
               <button
                 type="submit"
                 disabled={loading || !username || !password}
-                className="w-full py-3.5 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-semibold rounded-xl active:scale-[0.98] transition-all disabled:opacity-40 text-base shadow-lg shadow-violet-500/25"
+                className="w-full py-3.5 bg-sage-500 hover:bg-sage-600 text-white font-semibold rounded-xl active:scale-[0.98] transition-all disabled:opacity-40 text-base shadow-sm"
               >
                 {t('auth.loginAction')}
               </button>
@@ -90,23 +89,23 @@ export default function LoginPage() {
 
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-zinc-800" />
+                <div className="w-full border-t border-paper-border" />
               </div>
               <div className="relative flex justify-center">
-                <span className="bg-zinc-950 px-3 text-sm text-zinc-600">{t('session.or')}</span>
+                <span className="bg-paper px-3 text-sm text-warm-400">{t('session.or')}</span>
               </div>
             </div>
 
             <button
               onClick={() => setShowGuest(true)}
-              className="w-full py-3.5 bg-zinc-900 border border-zinc-800 text-zinc-300 font-medium rounded-xl active:scale-[0.98] transition-all text-base hover:border-zinc-700"
+              className="w-full py-3.5 bg-white border border-paper-border text-warm-600 font-medium rounded-xl active:scale-[0.98] transition-all text-base hover:border-warm-300"
             >
               {t('auth.guestAction')}
             </button>
 
-            <p className="text-center mt-6 text-sm text-zinc-600">
+            <p className="text-center mt-6 text-sm text-warm-500">
               {t('auth.noAccount')}{' '}
-              <Link to="/register" className="text-violet-400 font-medium hover:text-violet-300 transition-colors">{t('auth.register')}</Link>
+              <Link to="/register" className="text-sage-500 font-medium hover:text-sage-600 transition-colors">{t('auth.register')}</Link>
             </p>
           </>
         ) : (
@@ -117,14 +116,14 @@ export default function LoginPage() {
                 placeholder={t('auth.guestNamePlaceholder')}
                 value={guestName}
                 onChange={(e) => setGuestName(e.target.value)}
-                className="w-full px-4 py-3.5 bg-zinc-900 border border-zinc-800 rounded-xl text-base text-white placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all"
+                className="w-full px-4 py-3.5 bg-white border border-paper-border rounded-xl text-base text-warm-800 placeholder-warm-400 focus:outline-none focus:ring-2 focus:ring-sage-400/50 focus:border-sage-400/50 transition-all"
                 autoFocus
               />
 
               <button
                 type="submit"
                 disabled={loading || !guestName.trim()}
-                className="w-full py-3.5 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-semibold rounded-xl active:scale-[0.98] transition-all disabled:opacity-40 text-base shadow-lg shadow-violet-500/25"
+                className="w-full py-3.5 bg-sage-500 hover:bg-sage-600 text-white font-semibold rounded-xl active:scale-[0.98] transition-all disabled:opacity-40 text-base shadow-sm"
               >
                 {t('auth.guestStart')}
               </button>
@@ -132,7 +131,7 @@ export default function LoginPage() {
 
             <button
               onClick={() => setShowGuest(false)}
-              className="w-full text-center mt-4 text-sm text-zinc-600 hover:text-zinc-400 transition-colors"
+              className="w-full text-center mt-4 text-sm text-warm-500 hover:text-warm-600 transition-colors"
             >
               {t('common.back')}
             </button>

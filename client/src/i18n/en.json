@@ -3,7 +3,7 @@
     "name": "n2mu",
     "fullName": "nice to meet you",
     "tagline": "Truly get to know each other",
-    "description": "Someone sent you this link because they want to get to know you better. Honest questions, honest answers — no filters, no edits.",
+    "description": "Honest questions, honest answers.",
     "loginSubtitle": "Log in and start the conversation"
   },
   "nav": {
@@ -37,6 +37,7 @@
     "active": "Active",
     "archived": "Archived",
     "noSessions": "No sessions yet. Create one!",
+    "questionOfDay": "Question of the day",
     "withPartner": "with",
     "players": "players",
     "duo": "Duo",
@@ -45,8 +46,12 @@
   "session": {
     "pickQuestion": "Pick a question",
     "newQuestions": "Show new questions",
-    "randomQuestion": "Random question!",
+    "show3Random": "3 random questions",
+    "show3RandomDesc": "Pick one from three random questions",
+    "randomQuestion": "Full random!",
+    "randomQuestionDesc": "Draw one question — no choice",
     "pickCategory": "Pick a category",
+    "pickCategoryDesc": "Choose category and depth level",
     "yourTurn": "Your turn!",
     "turnOf": "Turn: {{name}}",
     "waitingForPartner": "Waiting for players...",

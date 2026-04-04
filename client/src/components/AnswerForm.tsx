@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import MediaCapture from './MediaCapture';
 import VoiceRecorder from './VoiceRecorder';
 
 const MAX_CHARS = 500;
@@ -21,11 +20,6 @@ export default function AnswerForm({ onSubmit, disabled }: Props) {
     setSubmitted(true);
   };
 
-  const handleMediaCaptured = (url: string, type: 'photo' | 'video') => {
-    onSubmit(type, undefined, url);
-    setSubmitted(true);
-  };
-
   const handleVoiceRecorded = (url: string) => {
     onSubmit('voice', undefined, url);
     setSubmitted(true);
@@ -33,18 +27,18 @@ export default function AnswerForm({ onSubmit, disabled }: Props) {
 
   if (submitted || disabled) {
     return (
-      <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-6 text-center animate-slide-up">
-        <svg className="w-12 h-12 mx-auto text-emerald-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <div className="bg-sage-50 border border-sage-200 rounded-2xl p-6 text-center animate-slide-up">
+        <svg className="w-12 h-12 mx-auto text-sage-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        <p className="text-emerald-300 font-medium">{t('session.answered')}</p>
-        <p className="text-emerald-400/60 text-sm mt-1">{t('session.waitingForAnswer')}</p>
+        <p className="text-sage-700 font-medium">{t('session.answered')}</p>
+        <p className="text-sage-500 text-sm mt-1">{t('session.waitingForAnswer')}</p>
       </div>
     );
   }
 
   const charCount = text.length;
-  const charColor = charCount > 480 ? 'text-rose-400' : charCount > 400 ? 'text-amber-400' : 'text-zinc-600';
+  const charColor = charCount > 480 ? 'text-rose-500' : charCount > 400 ? 'text-amber-500' : 'text-warm-400';
 
   return (
     <div className="space-y-4 animate-slide-up">
@@ -53,7 +47,7 @@ export default function AnswerForm({ onSubmit, disabled }: Props) {
           value={text}
           onChange={(e) => setText(e.target.value.slice(0, MAX_CHARS))}
           placeholder={t('session.answerPlaceholder')}
-          className="w-full resize-none bg-transparent border-0 focus:ring-0 text-zinc-200 placeholder-zinc-600 text-base p-0 min-h-[120px] outline-none"
+          className="w-full resize-none bg-transparent border-0 focus:ring-0 text-warm-800 placeholder-warm-400 text-base p-0 min-h-[120px] outline-none"
           rows={4}
           maxLength={MAX_CHARS}
         />
@@ -62,7 +56,7 @@ export default function AnswerForm({ onSubmit, disabled }: Props) {
           <button
             onClick={handleTextSubmit}
             disabled={!text.trim()}
-            className="px-6 py-2.5 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-medium rounded-xl active:scale-95 transition-all disabled:opacity-30 shadow-lg shadow-violet-500/20"
+            className="px-6 py-2.5 bg-sage-500 hover:bg-sage-600 text-white font-medium rounded-xl active:scale-95 transition-all disabled:opacity-30 shadow-sm"
           >
             {t('session.send')}
           </button>
@@ -71,21 +65,10 @@ export default function AnswerForm({ onSubmit, disabled }: Props) {
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-zinc-800" />
+          <div className="w-full border-t border-paper-border" />
         </div>
         <div className="relative flex justify-center">
-          <span className="bg-zinc-950 px-3 text-sm text-zinc-600">{t('session.or')}</span>
-        </div>
-      </div>
-
-      <MediaCapture onCaptured={handleMediaCaptured} />
-
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-zinc-800" />
-        </div>
-        <div className="relative flex justify-center">
-          <span className="bg-zinc-950 px-3 text-sm text-zinc-600">{t('session.or')}</span>
+          <span className="bg-paper px-3 text-sm text-warm-400">{t('session.or')}</span>
         </div>
       </div>
 

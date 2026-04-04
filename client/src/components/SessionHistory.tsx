@@ -21,7 +21,7 @@ export default function SessionHistory({ rounds }: Props) {
 
   if (revealedRounds.length === 0) {
     return (
-      <div className="text-center py-8 text-zinc-600 text-sm">
+      <div className="text-center py-8 text-warm-400 text-sm">
         {t('history.noHistory')}
       </div>
     );
@@ -29,7 +29,7 @@ export default function SessionHistory({ rounds }: Props) {
 
   return (
     <div className="space-y-4">
-      <h3 className="text-sm font-hand text-zinc-500 tracking-wider">
+      <h3 className="text-sm font-medium text-warm-400 uppercase tracking-wider">
         {t('session.history')}
       </h3>
       <div className="space-y-3">

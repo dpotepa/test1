@@ -5,54 +5,58 @@
 body {
   margin: 0;
   min-height: 100dvh;
-  background: #0c0a09;
-  color: #fafaf9;
+  background: #faf7f2;
+  color: #3a3530;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Notebook lined background */
+/* Subtle lined notebook background */
 .notebook-bg {
-  background-color: #0c0a09;
+  background-color: #faf7f2;
   background-image:
     repeating-linear-gradient(
       0deg,
       transparent,
-      transparent 27px,
-      rgba(120, 100, 80, 0.06) 27px,
-      rgba(120, 100, 80, 0.06) 28px
+      transparent 31px,
+      rgba(180, 170, 155, 0.12) 31px,
+      rgba(180, 170, 155, 0.12) 32px
     );
 }
 
-/* Paper card - warm dark tones */
+/* Paper card */
 .card-paper {
-  background: rgba(30, 27, 24, 0.85);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(60, 50, 40, 0.4);
+  background: #ffffff;
+  border: 1px solid #e8e2da;
   border-radius: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
-/* Sketch border - slightly rough edges */
+/* Sketch border */
 .sketch-border {
-  border: 2px solid rgba(120, 100, 80, 0.3);
+  border: 2px solid #d4cdc4;
   border-radius: 0.75rem;
-  box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.15);
+  box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.04);
 }
 
-/* Sticky note card - slight tilt */
+/* Note card - slight tilt */
 .note-card {
-  background: rgba(30, 27, 24, 0.9);
-  border: 1px solid rgba(60, 50, 40, 0.4);
-  border-radius: 0.5rem;
-  transform: rotate(-0.5deg);
-  transition: transform 0.2s ease;
+  background: #ffffff;
+  border: 1px solid #e8e2da;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  transform: rotate(-0.3deg);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .note-card:nth-child(even) {
-  transform: rotate(0.5deg);
+  transform: rotate(0.3deg);
 }
 .note-card:active {
   transform: rotate(0deg) scale(0.98);
+}
+.note-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 /* Tape decoration */
@@ -64,7 +68,7 @@ body {
   transform: translateX(-50%) rotate(-2deg);
   width: 60px;
   height: 12px;
-  background: rgba(139, 92, 246, 0.15);
+  background: rgba(107, 158, 107, 0.2);
   border-radius: 2px;
 }
 
@@ -80,7 +84,7 @@ body {
   bottom: -4px;
   width: 100%;
   height: 3px;
-  background: linear-gradient(90deg, rgba(139, 92, 246, 0.5), rgba(217, 70, 239, 0.5));
+  background: rgba(107, 158, 107, 0.5);
   border-radius: 2px;
   transform: rotate(-0.5deg);
 }
@@ -107,8 +111,8 @@ body {
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.3); }
-  50% { box-shadow: 0 0 20px 4px rgba(139, 92, 246, 0.15); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(107, 158, 107, 0.2); }
+  50% { box-shadow: 0 0 16px 4px rgba(107, 158, 107, 0.1); }
 }
 
 @keyframes float {
@@ -163,4 +167,4 @@ body {
 /* Scrollbar styling */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #27272a; border-radius: 2px; }
+::-webkit-scrollbar-thumb { background: #d4cdc4; border-radius: 2px; }

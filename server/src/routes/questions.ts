@@ -48,8 +48,17 @@ router.get('/random', authenticateToken, async (req: AuthRequest, res: Response)
     let params: any[];
 
     const mode = (req.query.mode as string) || 'duo';
+    const category = req.query.category as string | undefined;
+    const depth = req.query.depth ? parseInt(req.query.depth as string, 10) : undefined;
+
+    const extraConditions: string[] = [];
+    const extraParams: any[] = [];
 
     if (sessionId) {
+      let idx = 4;
+      if (category) { extraConditions.push(`c.slug = $${idx++}`); extraParams.push(category); }
+      if (depth) { extraConditions.push(`q.depth_level = $${idx++}`); extraParams.push(depth); }
+
       sql = `
         SELECT q.*, c.name as category_name
         FROM questions q
@@ -58,20 +67,26 @@ router.get('/random', authenticateToken, async (req: AuthRequest, res: Response)
           SELECT question_id FROM rounds WHERE session_id = $1
         )
         AND (q.mode = $3 OR q.mode = 'both')
+        ${extraConditions.map(c => `AND ${c}`).join(' ')}
         ORDER BY RANDOM()
         LIMIT $2
       `;
-      params = [sessionId, count, mode];
+      params = [sessionId, count, mode, ...extraParams];
     } else {
+      let idx = 3;
+      if (category) { extraConditions.push(`c.slug = $${idx++}`); extraParams.push(category); }
+      if (depth) { extraConditions.push(`q.depth_level = $${idx++}`); extraParams.push(depth); }
+
       sql = `
         SELECT q.*, c.name as category_name
         FROM questions q
         JOIN categories c ON q.category_id = c.id
         WHERE (q.mode = $2 OR q.mode = 'both')
+        ${extraConditions.map(c => `AND ${c}`).join(' ')}
         ORDER BY RANDOM()
         LIMIT $1
       `;
-      params = [count, mode];
+      params = [count, mode, ...extraParams];
     }
 
     const result = await query(sql, params);

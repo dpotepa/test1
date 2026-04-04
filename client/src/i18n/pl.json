@@ -3,7 +3,7 @@
     "name": "n2mu",
     "fullName": "nice to meet you",
     "tagline": "Poznajcie się naprawdę",
-    "description": "Ktoś wysłał Ci ten link, bo chce Cię lepiej poznać. Szczere pytania, szczere odpowiedzi — bez filtrów i poprawek.",
+    "description": "Szczere pytania, szczere odpowiedzi.",
     "loginSubtitle": "Zaloguj się i zacznij rozmowę"
   },
   "nav": {
@@ -37,6 +37,7 @@
     "active": "Aktywna",
     "archived": "Zakończona",
     "noSessions": "Nie masz jeszcze żadnych sesji. Utwórz nową!",
+    "questionOfDay": "Pytanie dnia",
     "withPartner": "z",
     "players": "graczy",
     "duo": "Duo",
@@ -45,8 +46,12 @@
   "session": {
     "pickQuestion": "Wybierz pytanie",
     "newQuestions": "Pokaż nowe pytania",
-    "randomQuestion": "Wylosuj pytanie!",
+    "show3Random": "3 losowe pytania",
+    "show3RandomDesc": "Wybierz jedno z trzech losowych pytań",
+    "randomQuestion": "Pełny los!",
+    "randomQuestionDesc": "Wylosuj jedno pytanie — bez wyboru",
     "pickCategory": "Wybierz kategorię",
+    "pickCategoryDesc": "Wybierz kategorię i poziom głębokości",
     "yourTurn": "Twoja kolej!",
     "turnOf": "Kolej: {{name}}",
     "waitingForPartner": "Czekam na graczy...",
