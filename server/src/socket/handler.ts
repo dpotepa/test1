@@ -109,6 +109,36 @@ export function setupSocket(io: Server) {
           return;
         }
 
+        // Fetch session for turn validation
+        const sessionResult = await query('SELECT * FROM sessions WHERE id = $1', [sessionId]);
+        if (sessionResult.rows.length === 0) return;
+        const sess = sessionResult.rows[0];
+
+        // Count completed rounds to determine whose turn
+        const completedRounds = await query(
+          "SELECT COUNT(*) as count FROM rounds WHERE session_id = $1 AND status = 'revealed'",
+          [sessionId]
+        );
+        const roundCount = parseInt(completedRounds.rows[0].count, 10);
+
+        if (sess.mode === 'party') {
+          const participantsRes = await query(
+            'SELECT user_id FROM session_participants WHERE session_id = $1 ORDER BY joined_at',
+            [sessionId]
+          );
+          const pIds = participantsRes.rows.map((r: any) => r.user_id);
+          if (pIds.length > 0 && socket.userId !== pIds[roundCount % pIds.length]) {
+            socket.emit('error', { message: 'Nie twoja kolej' });
+            return;
+          }
+        } else {
+          const userIds = [sess.user1_id, sess.user2_id].filter(Boolean);
+          if (userIds.length >= 2 && socket.userId !== userIds[roundCount % userIds.length]) {
+            socket.emit('error', { message: 'Nie twoja kolej' });
+            return;
+          }
+        }
+
         // Create round
         const result = await query(
           'INSERT INTO rounds (session_id, question_id, picked_by) VALUES ($1, $2, $3) RETURNING *',
@@ -195,6 +225,13 @@ export function setupSocket(io: Server) {
           // All answered — reveal!
           await query("UPDATE rounds SET status = 'revealed' WHERE id = $1", [roundId]);
 
+          // Count total revealed rounds (including this one) for turn calculation
+          const revealedCount = await query(
+            "SELECT COUNT(*) as count FROM rounds WHERE session_id = $1 AND status = 'revealed'",
+            [round.session_id]
+          );
+          const totalRevealed = parseInt(revealedCount.rows[0].count, 10);
+
           const answers = await query(
             `SELECT a.*, u.display_name as user_name
             FROM answers a
@@ -206,6 +243,7 @@ export function setupSocket(io: Server) {
 
           io.to(room).emit('round:revealed', {
             roundId,
+            roundCount: totalRevealed,
             answers: answers.rows.map((a: any) => ({
               userId: a.user_id,
               userName: a.user_name,

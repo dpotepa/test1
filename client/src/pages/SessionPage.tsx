@@ -25,6 +25,7 @@ export default function SessionPage() {
   const [revealedAnswers, setRevealedAnswers] = useState<any[]>([]);
   const [onlineUsers, setOnlineUsers] = useState<Set<number>>(new Set());
   const [rounds, setRounds] = useState<any[]>([]);
+  const [completedRoundCount, setCompletedRoundCount] = useState<number | null>(null);
   const [copied, setCopied] = useState(false);
   const [hasAnswered, setHasAnswered] = useState(false);
   const sessionIdRef = useRef<string | undefined>(id);
@@ -108,6 +109,9 @@ export default function SessionPage() {
     socket.on('round:revealed', (data: any) => {
       setRevealedAnswers(data.answers);
       setRoundState('revealed');
+      if (typeof data.roundCount === 'number') {
+        setCompletedRoundCount(data.roundCount);
+      }
       api.get(`/sessions/${id}/rounds`).then((res) => setRounds(res.data));
     });
 
@@ -180,17 +184,20 @@ export default function SessionPage() {
   const isWaitingParty = isParty && session.status === 'waiting';
   const gameActive = session.status === 'active' || (!isParty && session.user2_id);
 
-  // Determine whose turn it is (based on round count)
+  // Determine whose turn it is (based on completed round count)
+  // Use completedRoundCount from server when available (avoids race condition)
+  const revealedCount = completedRoundCount ?? rounds.filter(r => r.status === 'revealed').length;
+
   const getTurnUserId = () => {
     if (!session) return null;
     if (isParty) {
       if (participants.length === 0) return null;
-      const turnIndex = rounds.length % participants.length;
+      const turnIndex = revealedCount % participants.length;
       return participants[turnIndex]?.id;
     } else {
       const userIds = [session.user1_id, session.user2_id].filter(Boolean);
       if (userIds.length < 2) return user?.id;
-      return userIds[rounds.length % 2];
+      return userIds[revealedCount % 2];
     }
   };
 
