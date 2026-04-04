@@ -28,20 +28,30 @@
   "lobby": {
     "title": "Twoje sesje",
     "createSession": "Nowa sesja",
+    "createDuo": "Sesja 1 na 1",
+    "createParty": "Sesja grupowa",
     "joinSession": "Dołącz do sesji",
     "joinPlaceholder": "Wklej kod zaproszenia...",
     "join": "Dołącz",
-    "waiting": "Czeka na partnera",
+    "waiting": "Czeka na graczy",
     "active": "Aktywna",
     "archived": "Zakończona",
     "noSessions": "Nie masz jeszcze żadnych sesji. Utwórz nową!",
-    "withPartner": "z"
+    "withPartner": "z",
+    "players": "graczy",
+    "duo": "Duo",
+    "party": "Grupa"
   },
   "session": {
     "pickQuestion": "Wybierz pytanie",
     "newQuestions": "Pokaż nowe pytania",
-    "waitingForPartner": "Czekam na partnera...",
-    "waitingForAnswer": "Partner jeszcze odpowiada...",
+    "randomQuestion": "Wylosuj pytanie!",
+    "pickCategory": "Wybierz kategorię",
+    "yourTurn": "Twoja kolej!",
+    "turnOf": "Kolej: {{name}}",
+    "waitingForPartner": "Czekam na graczy...",
+    "waitingForAnswer": "Czekam na odpowiedzi...",
+    "waitingForAnswerCount": "{{count}}/{{total}} odpowiedzi",
     "yourAnswer": "Twoja odpowiedź",
     "partnerAnswer": "Odpowiedź partnera",
     "answerPlaceholder": "Napisz swoją szczerą odpowiedź...",
@@ -52,6 +62,9 @@
     "text": "Tekst",
     "takePhoto": "Zrób zdjęcie",
     "recordVideo": "Nagraj film",
+    "recordVoice": "Nagraj głosówkę",
+    "stopRecording": "Stop",
+    "uploading": "Wysyłanie...",
     "or": "lub",
     "depth": {
       "1": "Lekkie",
@@ -66,7 +79,10 @@
     "partnerOffline": "Offline",
     "noActiveRound": "Wybierz pytanie, żeby zacząć!",
     "history": "Historia odpowiedzi",
-    "shareHint": "Wyślij link znajomemu — niech dołączy do sesji"
+    "shareHint": "Wyślij link znajomym — niech dołączą do sesji",
+    "startGame": "Zacznij grę",
+    "participants": "Uczestnicy",
+    "waitingForHost": "Czekam aż host rozpocznie grę..."
   },
   "history": {
     "title": "Historia",

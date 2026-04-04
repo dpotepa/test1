@@ -29,7 +29,7 @@ export default function SessionHistory({ rounds }: Props) {
 
   return (
     <div className="space-y-4">
-      <h3 className="text-xs font-semibold text-zinc-600 uppercase tracking-wider">
+      <h3 className="text-sm font-hand text-zinc-500 tracking-wider">
         {t('session.history')}
       </h3>
       <div className="space-y-3">

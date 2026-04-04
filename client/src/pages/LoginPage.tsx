@@ -42,7 +42,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-dvh flex flex-col items-center justify-center px-6 bg-zinc-950">
+    <div className="min-h-dvh flex flex-col items-center justify-center px-6 bg-zinc-950 notebook-bg">
       <div className="w-full max-w-sm animate-slide-up">
         <div className="text-center mb-10">
           {/* Logo */}
@@ -50,7 +50,7 @@ export default function LoginPage() {
             <span className="text-3xl font-black text-white tracking-tighter">n2</span>
           </div>
           <h1 className="text-5xl font-black text-white tracking-tight">{t('app.name')}</h1>
-          <p className="text-sm text-violet-400 font-medium italic mt-1">{t('app.fullName')}</p>
+          <p className="text-2xl font-hand text-violet-400 mt-1">{t('app.fullName')}</p>
           <p className="text-zinc-500 mt-4 text-sm leading-relaxed max-w-xs mx-auto">{t('app.description')}</p>
         </div>
 

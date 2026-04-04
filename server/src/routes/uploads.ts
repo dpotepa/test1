@@ -18,11 +18,11 @@ const upload = multer({
   storage,
   limits: { fileSize: 100 * 1024 * 1024 }, // 100MB for videos
   fileFilter: (_req, file, cb) => {
-    const allowed = /^(image|video)\//;
+    const allowed = /^(image|video|audio)\//;
     if (allowed.test(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error('Dozwolone są tylko zdjęcia i filmy'));
+      cb(new Error('Dozwolone są tylko zdjęcia, filmy i nagrania audio'));
     }
   },
 });

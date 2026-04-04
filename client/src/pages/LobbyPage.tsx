@@ -26,9 +26,9 @@ export default function LobbyPage() {
     setLoading(false);
   };
 
-  const createSession = async () => {
+  const createSession = async (mode: 'duo' | 'party' = 'duo') => {
     try {
-      const res = await api.post('/sessions');
+      const res = await api.post('/sessions', { mode });
       navigate(`/session/${res.data.id}`);
     } catch (err) {
       console.error('Failed to create session:', err);
@@ -64,13 +64,13 @@ export default function LobbyPage() {
   };
 
   return (
-    <div className="min-h-dvh bg-zinc-950 pb-24">
+    <div className="min-h-dvh bg-zinc-950 notebook-bg pb-24">
       <div className="max-w-lg mx-auto px-4 pt-6">
         {/* Header */}
         <div className="mb-6 flex items-center justify-between animate-fade-in">
           <div>
             <h1 className="text-2xl font-black text-white tracking-tight">{t('app.name')}</h1>
-            <p className="text-zinc-600 text-xs italic">{t('app.fullName')}</p>
+            <p className="text-violet-400 text-sm font-hand">{t('app.fullName')}</p>
           </div>
           <div className="text-right">
             <p className="text-sm font-medium text-zinc-400">{user?.displayName}</p>
@@ -78,12 +78,20 @@ export default function LobbyPage() {
         </div>
 
         {/* Create session */}
-        <button
-          onClick={createSession}
-          className="w-full py-4 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-semibold rounded-2xl active:scale-[0.98] transition-all text-base shadow-lg shadow-violet-500/25 animate-slide-up"
-        >
-          + {t('lobby.createSession')}
-        </button>
+        <div className="flex gap-2 animate-slide-up">
+          <button
+            onClick={() => createSession('duo')}
+            className="flex-1 py-4 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-semibold rounded-2xl active:scale-[0.98] transition-all text-base shadow-lg shadow-violet-500/25"
+          >
+            {t('lobby.createDuo')}
+          </button>
+          <button
+            onClick={() => createSession('party')}
+            className="flex-1 py-4 bg-gradient-to-r from-fuchsia-600 to-rose-600 text-white font-semibold rounded-2xl active:scale-[0.98] transition-all text-base shadow-lg shadow-fuchsia-500/25"
+          >
+            {t('lobby.createParty')}
+          </button>
+        </div>
 
         {/* Join by code */}
         <div className="flex gap-2 mt-4 animate-slide-up" style={{ animationDelay: '80ms' }}>
@@ -106,7 +114,7 @@ export default function LobbyPage() {
 
         {/* Session list */}
         <div className="mt-8 animate-fade-in" style={{ animationDelay: '160ms' }}>
-          <h2 className="text-xs font-semibold text-zinc-600 uppercase tracking-wider mb-3">
+          <h2 className="text-sm font-hand text-zinc-500 tracking-wider mb-3">
             {t('lobby.title')}
           </h2>
 
@@ -127,7 +135,7 @@ export default function LobbyPage() {
                   <button
                     key={session.id}
                     onClick={() => navigate(`/session/${session.id}`)}
-                    className="w-full bg-zinc-900/80 backdrop-blur-sm rounded-2xl p-4 border border-zinc-800 text-left active:scale-[0.98] transition-all hover:border-zinc-700"
+                    className="w-full note-card rounded-2xl p-4 text-left active:scale-[0.98] transition-all hover:border-zinc-700"
                   >
                     <div className="flex items-center justify-between">
                       <div>
@@ -141,7 +149,14 @@ export default function LobbyPage() {
                           {new Date(session.created_at).toLocaleDateString()}
                         </p>
                       </div>
-                      {statusBadge(session.status)}
+                      <div className="flex items-center gap-2">
+                        {session.mode === 'party' && (
+                          <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-fuchsia-500/10 text-fuchsia-400 border border-fuchsia-500/20">
+                            {t('lobby.party')}
+                          </span>
+                        )}
+                        {statusBadge(session.status)}
+                      </div>
                     </div>
                   </button>
                 );

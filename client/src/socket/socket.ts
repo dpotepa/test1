@@ -7,6 +7,10 @@ export function getSocket(): Socket {
     socket = io({
       auth: { token: localStorage.getItem('token') },
       autoConnect: false,
+      reconnection: true,
+      reconnectionAttempts: 15,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 10000,
     });
   }
   return socket;

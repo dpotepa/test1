@@ -7,8 +7,19 @@ interface AuthSocket extends Socket {
   userId?: number;
 }
 
-// Track which users are in which rooms
-const roomUsers = new Map<string, Set<number>>();
+// Map socket IDs to user IDs for presence tracking
+const socketUserMap = new Map<string, number>();
+
+function getUsersInRoom(io: Server, room: string): number[] {
+  const socketIds = io.sockets.adapter.rooms.get(room);
+  if (!socketIds) return [];
+  const userIds = new Set<number>();
+  for (const sid of socketIds) {
+    const uid = socketUserMap.get(sid);
+    if (uid) userIds.add(uid);
+  }
+  return [...userIds];
+}
 
 export function setupSocket(io: Server) {
   // Auth middleware
@@ -27,13 +38,16 @@ export function setupSocket(io: Server) {
   });
 
   io.on('connection', (socket: AuthSocket) => {
-    console.log(`User ${socket.userId} connected`);
+    console.log(`User ${socket.userId} connected (socket ${socket.id})`);
+    socketUserMap.set(socket.id, socket.userId!);
 
     socket.on('session:join', async ({ sessionId }: { sessionId: number }) => {
       try {
-        // Verify user belongs to this session
+        // Verify user belongs to this session (duo or party)
         const session = await query(
-          'SELECT * FROM sessions WHERE id = $1 AND (user1_id = $2 OR user2_id = $2)',
+          `SELECT s.* FROM sessions s
+           LEFT JOIN session_participants sp ON sp.session_id = s.id AND sp.user_id = $2
+           WHERE s.id = $1 AND (s.user1_id = $2 OR s.user2_id = $2 OR sp.user_id IS NOT NULL)`,
           [sessionId, socket.userId]
         );
         if (session.rows.length === 0) return;
@@ -41,27 +55,21 @@ export function setupSocket(io: Server) {
         const room = `session:${sessionId}`;
         socket.join(room);
 
-        // Track user in room
-        if (!roomUsers.has(room)) {
-          roomUsers.set(room, new Set());
-        }
-        roomUsers.get(room)!.add(socket.userId!);
-
         // Get user info
         const user = await query('SELECT id, display_name FROM users WHERE id = $1', [socket.userId]);
 
-        // Tell the joining user who's already in the room
-        const usersInRoom = roomUsers.get(room)!;
-        const otherUserIds = [...usersInRoom].filter(uid => uid !== socket.userId);
-        if (otherUserIds.length > 0) {
-          // Partner is already here — tell the joining user
-          const partnerInfo = await query('SELECT id, display_name FROM users WHERE id = $1', [otherUserIds[0]]);
-          socket.emit('session:partner-joined', {
-            user: { id: partnerInfo.rows[0].id, displayName: partnerInfo.rows[0].display_name },
-          });
+        // Tell the joining user about everyone already in the room
+        const usersInRoom = getUsersInRoom(io, room).filter(uid => uid !== socket.userId);
+        for (const uid of usersInRoom) {
+          const partnerInfo = await query('SELECT id, display_name FROM users WHERE id = $1', [uid]);
+          if (partnerInfo.rows.length > 0) {
+            socket.emit('session:partner-joined', {
+              user: { id: partnerInfo.rows[0].id, displayName: partnerInfo.rows[0].display_name },
+            });
+          }
         }
 
-        // Notify others in the room
+        // Notify others in the room about this user
         socket.to(room).emit('session:partner-joined', {
           user: { id: user.rows[0].id, displayName: user.rows[0].display_name },
         });
@@ -78,18 +86,14 @@ export function setupSocket(io: Server) {
       }
     });
 
+    socket.on('session:started', ({ sessionId }: { sessionId: number }) => {
+      const room = `session:${sessionId}`;
+      socket.to(room).emit('session:started');
+    });
+
     socket.on('session:leave', ({ sessionId }: { sessionId: number }) => {
       const room = `session:${sessionId}`;
       socket.leave(room);
-
-      // Remove from tracking
-      if (roomUsers.has(room)) {
-        roomUsers.get(room)!.delete(socket.userId!);
-        if (roomUsers.get(room)!.size === 0) {
-          roomUsers.delete(room);
-        }
-      }
-
       socket.to(room).emit('session:partner-left', { userId: socket.userId });
     });
 
@@ -135,11 +139,17 @@ export function setupSocket(io: Server) {
       mediaUrl,
     }: {
       roundId: number;
-      answerType: 'text' | 'photo' | 'video';
+      answerType: 'text' | 'photo' | 'video' | 'voice';
       text?: string;
       mediaUrl?: string;
     }) => {
       try {
+        // Validate text length
+        if (answerType === 'text' && text && text.length > 500) {
+          socket.emit('error', { message: 'Odpowiedź tekstowa max 500 znaków' });
+          return;
+        }
+
         // Get round info
         const roundResult = await query('SELECT * FROM rounds WHERE id = $1', [roundId]);
         if (roundResult.rows.length === 0) return;
@@ -161,14 +171,28 @@ export function setupSocket(io: Server) {
           [roundId, socket.userId, answerType, text || null, mediaUrl || null]
         );
 
+        // Get session to determine participant count
+        const sessionResult = await query('SELECT * FROM sessions WHERE id = $1', [round.session_id]);
+        const session = sessionResult.rows[0];
+
+        // Count expected answers (for duo: 2, for party: count from session_participants)
+        let expectedAnswers = 2;
+        if (session.mode === 'party') {
+          const participantCount = await query(
+            'SELECT COUNT(*) as count FROM session_participants WHERE session_id = $1',
+            [round.session_id]
+          );
+          expectedAnswers = parseInt(participantCount.rows[0].count, 10);
+        }
+
         // Check how many answers this round has
         const answerCount = await query('SELECT COUNT(*) as count FROM answers WHERE round_id = $1', [roundId]);
         const count = parseInt(answerCount.rows[0].count, 10);
 
         const room = `session:${round.session_id}`;
 
-        if (count >= 2) {
-          // Both answered — reveal!
+        if (count >= expectedAnswers) {
+          // All answered — reveal!
           await query("UPDATE rounds SET status = 'revealed' WHERE id = $1", [roundId]);
 
           const answers = await query(
@@ -192,8 +216,12 @@ export function setupSocket(io: Server) {
             })),
           });
         } else {
-          // Only one answered — notify partner (no content!)
-          socket.to(room).emit('round:partner-answered', { roundId });
+          // Not everyone answered — notify others (no content!)
+          socket.to(room).emit('round:partner-answered', {
+            roundId,
+            answeredCount: count,
+            totalCount: expectedAnswers,
+          });
         }
       } catch (err) {
         console.error('round:answer error:', err);
@@ -201,17 +229,13 @@ export function setupSocket(io: Server) {
     });
 
     socket.on('disconnect', () => {
-      // Remove user from all rooms they were in
-      for (const [room, users] of roomUsers.entries()) {
-        if (users.has(socket.userId!)) {
-          users.delete(socket.userId!);
-          // Notify room that user left
+      // Notify all rooms this socket was in
+      for (const room of socket.rooms) {
+        if (room.startsWith('session:')) {
           socket.to(room).emit('session:partner-left', { userId: socket.userId });
-          if (users.size === 0) {
-            roomUsers.delete(room);
-          }
         }
       }
+      socketUserMap.delete(socket.id);
       console.log(`User ${socket.userId} disconnected`);
     });
   });

@@ -14,7 +14,7 @@ export default function HistoryPage() {
 
   useEffect(() => {
     api.get('/sessions').then((res) => {
-      setSessions(res.data);
+      setSessions(res.data.filter((s: any) => s.status !== 'waiting'));
       setLoading(false);
     });
   }, []);
@@ -26,9 +26,9 @@ export default function HistoryPage() {
   }, [selectedSession]);
 
   return (
-    <div className="min-h-dvh bg-zinc-950 pb-24">
+    <div className="min-h-dvh bg-zinc-950 notebook-bg pb-24">
       <div className="max-w-lg mx-auto px-4 pt-6 space-y-6">
-        <h1 className="text-2xl font-bold text-white animate-fade-in">{t('history.title')}</h1>
+        <h1 className="text-2xl font-black text-white animate-fade-in">{t('history.title')}</h1>
 
         {loading ? (
           <div className="text-center py-8">
@@ -49,7 +49,7 @@ export default function HistoryPage() {
                     onClick={() => setSelectedSession(
                       selectedSession === session.id ? null : session.id
                     )}
-                    className="w-full bg-zinc-900/80 backdrop-blur-sm rounded-2xl p-4 border border-zinc-800 text-left active:scale-[0.98] transition-all hover:border-zinc-700"
+                    className="w-full note-card rounded-2xl p-4 text-left active:scale-[0.98] transition-all hover:border-zinc-700"
                   >
                     <div className="flex items-center justify-between">
                       <div>

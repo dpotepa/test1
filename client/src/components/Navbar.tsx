@@ -13,7 +13,7 @@ export default function Navbar() {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-zinc-950/90 backdrop-blur-xl border-t border-zinc-800/50 z-50 safe-bottom">
+    <nav className="fixed bottom-0 left-0 right-0 bg-paper-dark/95 backdrop-blur-xl border-t-2 border-dashed border-zinc-700/50 z-50 safe-bottom">
       <div className="max-w-lg mx-auto flex items-center justify-around py-2">
         <button
           onClick={() => navigate('/')}

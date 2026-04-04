@@ -8,9 +8,11 @@ router.get('/sessions/:sessionId/rounds', authenticateToken, async (req: AuthReq
   try {
     const { sessionId } = req.params;
 
-    // Verify user belongs to session
+    // Verify user belongs to session (duo or party)
     const session = await query(
-      'SELECT * FROM sessions WHERE id = $1 AND (user1_id = $2 OR user2_id = $2)',
+      `SELECT s.* FROM sessions s
+       LEFT JOIN session_participants sp ON sp.session_id = s.id AND sp.user_id = $2
+       WHERE s.id = $1 AND (s.user1_id = $2 OR s.user2_id = $2 OR sp.user_id IS NOT NULL)`,
       [sessionId, req.userId]
     );
     if (session.rows.length === 0) {

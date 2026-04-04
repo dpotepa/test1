@@ -28,20 +28,30 @@
   "lobby": {
     "title": "Your sessions",
     "createSession": "New session",
+    "createDuo": "1-on-1 session",
+    "createParty": "Group session",
     "joinSession": "Join session",
     "joinPlaceholder": "Paste invite code...",
     "join": "Join",
-    "waiting": "Waiting for partner",
+    "waiting": "Waiting for players",
     "active": "Active",
     "archived": "Archived",
     "noSessions": "No sessions yet. Create one!",
-    "withPartner": "with"
+    "withPartner": "with",
+    "players": "players",
+    "duo": "Duo",
+    "party": "Group"
   },
   "session": {
     "pickQuestion": "Pick a question",
     "newQuestions": "Show new questions",
-    "waitingForPartner": "Waiting for partner...",
-    "waitingForAnswer": "Partner is still answering...",
+    "randomQuestion": "Random question!",
+    "pickCategory": "Pick a category",
+    "yourTurn": "Your turn!",
+    "turnOf": "Turn: {{name}}",
+    "waitingForPartner": "Waiting for players...",
+    "waitingForAnswer": "Waiting for answers...",
+    "waitingForAnswerCount": "{{count}}/{{total}} answers",
     "yourAnswer": "Your answer",
     "partnerAnswer": "Partner's answer",
     "answerPlaceholder": "Write your honest answer...",
@@ -52,6 +62,9 @@
     "text": "Text",
     "takePhoto": "Take photo",
     "recordVideo": "Record video",
+    "recordVoice": "Record voice message",
+    "stopRecording": "Stop",
+    "uploading": "Uploading...",
     "or": "or",
     "depth": {
       "1": "Light",
@@ -66,7 +79,10 @@
     "partnerOffline": "Offline",
     "noActiveRound": "Pick a question to start!",
     "history": "Answer history",
-    "shareHint": "Send the link to a friend — let them join the session"
+    "shareHint": "Send the link to friends — let them join the session",
+    "startGame": "Start game",
+    "participants": "Participants",
+    "waitingForHost": "Waiting for host to start the game..."
   },
   "history": {
     "title": "History",

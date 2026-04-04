@@ -5,11 +5,89 @@
 body {
   margin: 0;
   min-height: 100dvh;
-  background: #09090b;
-  color: #fafafa;
+  background: #0c0a09;
+  color: #fafaf9;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Notebook lined background */
+.notebook-bg {
+  background-color: #0c0a09;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 27px,
+      rgba(120, 100, 80, 0.06) 27px,
+      rgba(120, 100, 80, 0.06) 28px
+    );
+}
+
+/* Paper card - warm dark tones */
+.card-paper {
+  background: rgba(30, 27, 24, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(60, 50, 40, 0.4);
+  border-radius: 1rem;
+}
+
+/* Sketch border - slightly rough edges */
+.sketch-border {
+  border: 2px solid rgba(120, 100, 80, 0.3);
+  border-radius: 0.75rem;
+  box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.15);
+}
+
+/* Sticky note card - slight tilt */
+.note-card {
+  background: rgba(30, 27, 24, 0.9);
+  border: 1px solid rgba(60, 50, 40, 0.4);
+  border-radius: 0.5rem;
+  transform: rotate(-0.5deg);
+  transition: transform 0.2s ease;
+}
+.note-card:nth-child(even) {
+  transform: rotate(0.5deg);
+}
+.note-card:active {
+  transform: rotate(0deg) scale(0.98);
+}
+
+/* Tape decoration */
+.tape::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+  width: 60px;
+  height: 12px;
+  background: rgba(139, 92, 246, 0.15);
+  border-radius: 2px;
+}
+
+/* Doodle underline */
+.doodle-underline {
+  position: relative;
+  display: inline-block;
+}
+.doodle-underline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.5), rgba(217, 70, 239, 0.5));
+  border-radius: 2px;
+  transform: rotate(-0.5deg);
+}
+
+/* Handwritten heading style */
+.font-hand {
+  font-family: 'Caveat', cursive;
 }
 
 /* Custom animations */
@@ -38,6 +116,11 @@ body {
   50% { transform: translateY(-4px); }
 }
 
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-1deg); }
+  50% { transform: rotate(1deg); }
+}
+
 .animate-fade-in {
   animation: fade-in 0.4s ease-out;
 }
@@ -58,6 +141,10 @@ body {
   animation: float 3s ease-in-out infinite;
 }
 
+.animate-wiggle {
+  animation: wiggle 2s ease-in-out infinite;
+}
+
 /* Staggered children animation */
 .stagger-children > * {
   animation: slide-up 0.4s ease-out both;
@@ -74,13 +161,6 @@ body {
 }
 
 /* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 4px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: #27272a;
-  border-radius: 2px;
-}
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #27272a; border-radius: 2px; }

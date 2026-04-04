@@ -47,6 +47,8 @@ router.get('/random', authenticateToken, async (req: AuthRequest, res: Response)
     let sql: string;
     let params: any[];
 
+    const mode = (req.query.mode as string) || 'duo';
+
     if (sessionId) {
       sql = `
         SELECT q.*, c.name as category_name
@@ -55,19 +57,21 @@ router.get('/random', authenticateToken, async (req: AuthRequest, res: Response)
         WHERE q.id NOT IN (
           SELECT question_id FROM rounds WHERE session_id = $1
         )
+        AND (q.mode = $3 OR q.mode = 'both')
         ORDER BY RANDOM()
         LIMIT $2
       `;
-      params = [sessionId, count];
+      params = [sessionId, count, mode];
     } else {
       sql = `
         SELECT q.*, c.name as category_name
         FROM questions q
         JOIN categories c ON q.category_id = c.id
+        WHERE (q.mode = $2 OR q.mode = 'both')
         ORDER BY RANDOM()
         LIMIT $1
       `;
-      params = [count];
+      params = [count, mode];
     }
 
     const result = await query(sql, params);

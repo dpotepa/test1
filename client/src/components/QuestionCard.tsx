@@ -22,7 +22,7 @@ export default function QuestionCard({ question, onPick }: Props) {
   return (
     <button
       onClick={() => onPick(question.id)}
-      className="w-full text-left bg-zinc-900/80 backdrop-blur-sm rounded-2xl p-5 border border-zinc-800 active:scale-[0.98] transition-all hover:border-zinc-700"
+      className="w-full text-left note-card rounded-2xl p-5 active:scale-[0.98] hover:border-zinc-700"
     >
       <div className="flex items-center gap-2 mb-3">
         <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${depthColors[question.depth_level]}`}>
@@ -30,7 +30,7 @@ export default function QuestionCard({ question, onPick }: Props) {
         </span>
         <span className="text-xs text-zinc-600">{question.category_name}</span>
       </div>
-      <p className="text-zinc-200 text-base leading-relaxed">{question.text}</p>
+      <p className="text-zinc-200 text-lg font-hand leading-relaxed">{question.text}</p>
     </button>
   );
 }
