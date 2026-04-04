@@ -80,6 +80,29 @@ export function setupSocket(io: Server) {
           await query("UPDATE sessions SET status = 'active' WHERE id = $1", [sessionId]);
         }
 
+        // Notify joining user about any active round
+        const activeRound = await query(
+          `SELECT r.*, q.text as question_text, q.depth_level, c.name as category_name
+           FROM rounds r
+           JOIN questions q ON r.question_id = q.id
+           JOIN categories c ON q.category_id = c.id
+           WHERE r.session_id = $1 AND r.status = 'answering'
+           LIMIT 1`,
+          [sessionId]
+        );
+        if (activeRound.rows.length > 0) {
+          const ar = activeRound.rows[0];
+          const myAnswer = await query(
+            'SELECT id FROM answers WHERE round_id = $1 AND user_id = $2',
+            [ar.id, socket.userId]
+          );
+          socket.emit('round:started', {
+            round: { id: ar.id, sessionId: ar.session_id, status: ar.status, createdAt: ar.created_at },
+            question: { id: ar.question_id, text: ar.question_text, category_name: ar.category_name, depth_level: ar.depth_level },
+            alreadyAnswered: myAnswer.rows.length > 0,
+          });
+        }
+
         console.log(`User ${socket.userId} joined session ${sessionId}`);
       } catch (err) {
         console.error('session:join error:', err);

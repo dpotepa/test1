@@ -31,7 +31,7 @@ router.get('/sessions/:sessionId/rounds', authenticateToken, async (req: AuthReq
       [sessionId]
     );
 
-    // For revealed rounds, include answers
+    // For revealed rounds, include answers; for answering rounds, include user_answered flag
     const roundsWithAnswers = await Promise.all(
       rounds.rows.map(async (round: any) => {
         if (round.status === 'revealed') {
@@ -44,6 +44,13 @@ router.get('/sessions/:sessionId/rounds', authenticateToken, async (req: AuthReq
             [round.id]
           );
           return { ...round, answers: answers.rows };
+        }
+        if (round.status === 'answering') {
+          const myAnswer = await query(
+            'SELECT id FROM answers WHERE round_id = $1 AND user_id = $2',
+            [round.id, req.userId]
+          );
+          return { ...round, answers: [], user_answered: myAnswer.rows.length > 0 };
         }
         return { ...round, answers: [] };
       })

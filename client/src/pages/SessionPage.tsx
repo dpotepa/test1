@@ -43,7 +43,23 @@ export default function SessionPage() {
   useEffect(() => {
     if (!id) return;
     api.get(`/sessions/${id}`).then((res) => setSession(res.data)).catch(() => navigate('/'));
-    api.get(`/sessions/${id}/rounds`).then((res) => setRounds(res.data));
+    api.get(`/sessions/${id}/rounds`).then((res) => {
+      setRounds(res.data);
+      // Restore active round state if one exists
+      const activeRound = res.data.find((r: any) => r.status === 'answering');
+      if (activeRound) {
+        setCurrentRound({ id: activeRound.id, sessionId: activeRound.session_id, status: activeRound.status });
+        setCurrentQuestion({
+          id: activeRound.question_id,
+          text: activeRound.question_text,
+          category_name: activeRound.category_name,
+          depth_level: activeRound.depth_level,
+        });
+        setRoundState('answering');
+        // Check if current user already answered
+        if (activeRound.user_answered) setHasAnswered(true);
+      }
+    });
   }, [id]);
 
   useEffect(() => {
@@ -100,7 +116,7 @@ export default function SessionPage() {
       setCurrentRound(data.round);
       setCurrentQuestion(data.question);
       setRoundState('answering');
-      setHasAnswered(false);
+      setHasAnswered(data.alreadyAnswered || false);
       setRevealedAnswers([]);
     });
 
