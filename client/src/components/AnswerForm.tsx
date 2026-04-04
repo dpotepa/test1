@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import MediaCapture from './MediaCapture';
 import VoiceRecorder from './VoiceRecorder';
 
 const MAX_CHARS = 500;
@@ -17,6 +18,11 @@ export default function AnswerForm({ onSubmit, disabled }: Props) {
   const handleTextSubmit = () => {
     if (!text.trim() || text.trim().length > MAX_CHARS) return;
     onSubmit('text', text.trim());
+    setSubmitted(true);
+  };
+
+  const handlePhotoCaptured = (url: string) => {
+    onSubmit('photo', undefined, url);
     setSubmitted(true);
   };
 
@@ -72,7 +78,14 @@ export default function AnswerForm({ onSubmit, disabled }: Props) {
         </div>
       </div>
 
-      <VoiceRecorder onRecorded={handleVoiceRecorded} />
+      <div className="flex gap-3">
+        <div className="flex-1">
+          <MediaCapture onCaptured={handlePhotoCaptured} />
+        </div>
+        <div className="flex-1">
+          <VoiceRecorder onRecorded={handleVoiceRecorded} />
+        </div>
+      </div>
     </div>
   );
 }

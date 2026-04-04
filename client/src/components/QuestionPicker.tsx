@@ -21,7 +21,7 @@ export default function QuestionPicker({ sessionId, onPick, mode = 'duo' }: Prop
   const [selectedDepth, setSelectedDepth] = useState<number | null>(null);
 
   useEffect(() => {
-    api.get('/questions/categories').then(res => setCategories(res.data));
+    api.get('/questions/categories', { params: { mode } }).then(res => setCategories(res.data));
   }, []);
 
   const loadQuestions = async (category?: string, depth?: number) => {

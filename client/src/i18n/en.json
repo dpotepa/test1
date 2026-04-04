@@ -55,7 +55,7 @@
     "yourTurn": "Your turn!",
     "turnOf": "Turn: {{name}}",
     "waitingForPartner": "Waiting for players...",
-    "waitingForAnswer": "Waiting for answers...",
+    "waitingForAnswer": "Waiting for answer...",
     "waitingForAnswerCount": "{{count}}/{{total}} answers",
     "yourAnswer": "Your answer",
     "partnerAnswer": "Partner's answer",

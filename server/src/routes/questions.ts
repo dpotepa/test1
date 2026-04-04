@@ -4,9 +4,16 @@ import { authenticateToken, AuthRequest } from '../middleware/auth';
 
 const router = Router();
 
-router.get('/categories', authenticateToken, async (_req: AuthRequest, res: Response) => {
+router.get('/categories', authenticateToken, async (req: AuthRequest, res: Response) => {
   try {
-    const result = await query('SELECT * FROM categories ORDER BY id');
+    const mode = (req.query.mode as string) || 'both';
+    const result = await query(
+      `SELECT DISTINCT c.* FROM categories c
+       JOIN questions q ON q.category_id = c.id
+       WHERE (q.mode = $1 OR q.mode = 'both')
+       ORDER BY c.id`,
+      [mode]
+    );
     res.json(result.rows);
   } catch (err) {
     console.error('List categories error:', err);

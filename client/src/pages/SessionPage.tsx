@@ -9,6 +9,7 @@ import AnswerForm from '../components/AnswerForm';
 import AnswerReveal from '../components/AnswerReveal';
 import PartnerStatus from '../components/PartnerStatus';
 import SessionHistory from '../components/SessionHistory';
+import { requestNotificationPermission, showNotification, playNotificationSound } from '../utils/notifications';
 
 type RoundState = 'idle' | 'picking' | 'answering' | 'waiting' | 'revealed';
 
@@ -62,6 +63,11 @@ export default function SessionPage() {
     });
   }, [id]);
 
+  // Request notification permission on mount
+  useEffect(() => {
+    requestNotificationPermission();
+  }, []);
+
   useEffect(() => {
     if (!id || !session) return;
 
@@ -77,6 +83,8 @@ export default function SessionPage() {
 
     socket.on('session:partner-joined', (data: any) => {
       if (data.user) {
+        showNotification('n2mu', `${data.user.displayName} dołączył/a`);
+        playNotificationSound('gentle');
         setOnlineUsers(prev => new Set([...prev, data.user.id]));
         setSession((s: any) => {
           if (!s) return s;
@@ -109,10 +117,16 @@ export default function SessionPage() {
     });
 
     socket.on('session:started', () => {
+      showNotification('n2mu', 'Gra się rozpoczęła!');
+      playNotificationSound('success');
       setSession((s: any) => s ? { ...s, status: 'active' } : s);
     });
 
     socket.on('round:started', (data: any) => {
+      if (!data.alreadyAnswered) {
+        showNotification('n2mu', 'Nowe pytanie!');
+        playNotificationSound('gentle');
+      }
       setCurrentRound(data.round);
       setCurrentQuestion(data.question);
       setRoundState('answering');
@@ -120,9 +134,13 @@ export default function SessionPage() {
       setRevealedAnswers([]);
     });
 
-    socket.on('round:partner-answered', () => {});
+    socket.on('round:partner-answered', () => {
+      playNotificationSound('gentle');
+    });
 
     socket.on('round:revealed', (data: any) => {
+      showNotification('n2mu', 'Odpowiedzi ujawnione!');
+      playNotificationSound('success');
       setRevealedAnswers(data.answers);
       setRoundState('revealed');
       if (typeof data.roundCount === 'number') {

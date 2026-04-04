@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export default function LoginPage() {
   const { t } = useTranslation();
   const { login, guestLogin } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const redirect = new URLSearchParams(location.search).get('redirect') || '/';
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [guestName, setGuestName] = useState('');
@@ -20,7 +22,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await login(username, password);
-      navigate('/');
+      navigate(redirect);
     } catch (err: any) {
       setError(err.response?.data?.error || t('common.error'));
     }
@@ -34,12 +36,14 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await guestLogin(guestName.trim());
-      navigate('/');
+      navigate(redirect);
     } catch (err: any) {
       setError(err.response?.data?.error || t('common.error'));
     }
     setLoading(false);
   };
+
+  const registerUrl = redirect !== '/' ? `/register?redirect=${encodeURIComponent(redirect)}` : '/register';
 
   return (
     <div className="min-h-dvh flex flex-col items-center justify-center px-6 notebook-bg">
@@ -64,7 +68,8 @@ export default function LoginPage() {
                 type="text"
                 placeholder={t('auth.username')}
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => setUsername(e.target.value.slice(0, 50))}
+                maxLength={50}
                 className="w-full px-4 py-3.5 bg-white border border-paper-border rounded-xl text-base text-warm-800 placeholder-warm-400 focus:outline-none focus:ring-2 focus:ring-sage-400/50 focus:border-sage-400/50 transition-all"
                 autoComplete="username"
               />
@@ -105,7 +110,7 @@ export default function LoginPage() {
 
             <p className="text-center mt-6 text-sm text-warm-500">
               {t('auth.noAccount')}{' '}
-              <Link to="/register" className="text-sage-500 font-medium hover:text-sage-600 transition-colors">{t('auth.register')}</Link>
+              <Link to={registerUrl} className="text-sage-500 font-medium hover:text-sage-600 transition-colors">{t('auth.register')}</Link>
             </p>
           </>
         ) : (
@@ -115,7 +120,8 @@ export default function LoginPage() {
                 type="text"
                 placeholder={t('auth.guestNamePlaceholder')}
                 value={guestName}
-                onChange={(e) => setGuestName(e.target.value)}
+                onChange={(e) => setGuestName(e.target.value.slice(0, 30))}
+                maxLength={30}
                 className="w-full px-4 py-3.5 bg-white border border-paper-border rounded-xl text-base text-warm-800 placeholder-warm-400 focus:outline-none focus:ring-2 focus:ring-sage-400/50 focus:border-sage-400/50 transition-all"
                 autoFocus
               />

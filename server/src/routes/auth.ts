@@ -23,6 +23,10 @@ router.post('/register', async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Hasło musi mieć minimum 6 znaków' });
     }
 
+    if (displayName.length > 30) {
+      return res.status(400).json({ error: 'Imię może mieć maksymalnie 30 znaków' });
+    }
+
     const existing = await query('SELECT id FROM users WHERE username = $1', [username]);
     if (existing.rows.length > 0) {
       return res.status(409).json({ error: 'Ta nazwa użytkownika jest już zajęta' });
@@ -78,6 +82,10 @@ router.post('/guest', async (req: Request, res: Response) => {
 
     if (!displayName || displayName.trim().length < 1) {
       return res.status(400).json({ error: 'Podaj swoje imię' });
+    }
+
+    if (displayName.trim().length > 30) {
+      return res.status(400).json({ error: 'Imię może mieć maksymalnie 30 znaków' });
     }
 
     const guestUsername = `guest_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;

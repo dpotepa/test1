@@ -55,7 +55,7 @@
     "yourTurn": "Twoja kolej!",
     "turnOf": "Kolej: {{name}}",
     "waitingForPartner": "Czekam na graczy...",
-    "waitingForAnswer": "Czekam na odpowiedzi...",
+    "waitingForAnswer": "Czekam na odpowiedź...",
     "waitingForAnswerCount": "{{count}}/{{total}} odpowiedzi",
     "yourAnswer": "Twoja odpowiedź",
     "partnerAnswer": "Odpowiedź partnera",
