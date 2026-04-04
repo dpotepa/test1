@@ -143,7 +143,7 @@ export default function SessionPage() {
   }, [currentRound]);
 
   const handleNextQuestion = () => {
-    setRoundState('picking');
+    setRoundState('idle');
     setCurrentRound(null);
     setCurrentQuestion(null);
     setRevealedAnswers([]);
@@ -323,18 +323,12 @@ export default function SessionPage() {
                   categoryName={currentQuestion.category_name}
                   depthLevel={currentQuestion.depth_level}
                 />
-                {isMyTurn ? (
-                  <button
-                    onClick={handleNextQuestion}
-                    className="w-full py-3.5 bg-sage-500 hover:bg-sage-600 text-white font-semibold rounded-2xl active:scale-95 transition-all shadow-sm"
-                  >
-                    {t('session.nextQuestion')}
-                  </button>
-                ) : (
-                  <p className="text-center text-warm-500 text-sm font-medium py-3">
-                    {t('session.turnOf', { name: participants.find((p: any) => p.id === turnUserId)?.display_name || partnerName || '...' })}
-                  </p>
-                )}
+                <button
+                  onClick={handleNextQuestion}
+                  className="w-full py-3.5 bg-sage-500 hover:bg-sage-600 text-white font-semibold rounded-2xl active:scale-95 transition-all shadow-sm"
+                >
+                  {t('session.nextQuestion')}
+                </button>
               </div>
             )}
           </div>

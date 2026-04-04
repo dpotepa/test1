@@ -14,6 +14,32 @@ router.get('/categories', authenticateToken, async (_req: AuthRequest, res: Resp
   }
 });
 
+router.get('/daily', authenticateToken, async (_req: AuthRequest, res: Response) => {
+  try {
+    const today = new Date().toISOString().slice(0, 10);
+    let hash = 0;
+    for (let i = 0; i < today.length; i++) {
+      hash = ((hash << 5) - hash) + today.charCodeAt(i);
+      hash |= 0;
+    }
+    const countRes = await query("SELECT COUNT(*) FROM questions WHERE mode IN ('both','duo')");
+    const total = parseInt(countRes.rows[0].count, 10);
+    if (total === 0) return res.json(null);
+    const idx = ((hash % total) + total) % total;
+    const result = await query(
+      `SELECT q.*, c.name as category_name FROM questions q
+       JOIN categories c ON q.category_id = c.id
+       WHERE q.mode IN ('both','duo')
+       ORDER BY q.id
+       LIMIT 1 OFFSET $1`, [idx]
+    );
+    res.json(result.rows[0] || null);
+  } catch (err) {
+    console.error('Daily question error:', err);
+    res.status(500).json({ error: 'Błąd serwera' });
+  }
+});
+
 router.get('/', authenticateToken, async (req: AuthRequest, res: Response) => {
   try {
     let sql = 'SELECT q.*, c.name as category_name FROM questions q JOIN categories c ON q.category_id = c.id WHERE 1=1';

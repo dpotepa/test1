@@ -30,8 +30,8 @@ export default function LobbyPage() {
 
   const loadDailyQuestion = async () => {
     try {
-      const res = await api.get('/questions/random', { params: { count: 1, mode: 'both' } });
-      if (res.data.length > 0) setDailyQuestion(res.data[0]);
+      const res = await api.get('/questions/daily');
+      if (res.data) setDailyQuestion(res.data);
     } catch (err) {
       console.error('Failed to load daily question:', err);
     }
