@@ -27,7 +27,7 @@ interface Props {
   onReact?: (answerId: number, emoji: string) => void;
 }
 
-const EMOJI_OPTIONS = ['❤️', '😂', '😮', '👏', '🔥'];
+const EMOJI_OPTIONS = ['❤️', '😂', '😮', '👏', '🔥', '💩'];
 
 const depthColors: Record<number, string> = {
   1: 'bg-sage-50 text-sage-600 border border-sage-200',

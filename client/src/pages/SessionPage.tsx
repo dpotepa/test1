@@ -445,7 +445,7 @@ export default function SessionPage() {
 
         {rounds.length > 0 && (
           <div className="animate-fade-in">
-            <SessionHistory rounds={rounds} onReact={handleReact} />
+            <SessionHistory rounds={rounds} onReact={handleReact} currentRoundId={currentRound?.id} />
           </div>
         )}
       </div>

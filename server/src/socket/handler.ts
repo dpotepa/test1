@@ -307,26 +307,19 @@ export function setupSocket(io: Server) {
 
     socket.on('reaction:toggle', async ({ answerId, emoji, sessionId }: { answerId: number; emoji: string; sessionId: number }) => {
       try {
-        // Check if reaction already exists
-        const existing = await query(
-          'SELECT id FROM reactions WHERE answer_id = $1 AND user_id = $2',
+        const current = await query(
+          'SELECT emoji FROM reactions WHERE answer_id = $1 AND user_id = $2',
           [answerId, socket.userId]
         );
 
-        if (existing.rows.length > 0) {
-          // Check if same emoji → remove, different → update
-          const current = await query(
-            'SELECT emoji FROM reactions WHERE answer_id = $1 AND user_id = $2',
-            [answerId, socket.userId]
-          );
-          if (current.rows[0].emoji === emoji) {
-            await query('DELETE FROM reactions WHERE answer_id = $1 AND user_id = $2', [answerId, socket.userId]);
-          } else {
-            await query('UPDATE reactions SET emoji = $3 WHERE answer_id = $1 AND user_id = $2', [answerId, socket.userId, emoji]);
-          }
+        if (current.rows.length > 0 && current.rows[0].emoji === emoji) {
+          // Same emoji — remove reaction
+          await query('DELETE FROM reactions WHERE answer_id = $1 AND user_id = $2', [answerId, socket.userId]);
         } else {
+          // New or different emoji — upsert (ON CONFLICT prevents race condition duplicates)
           await query(
-            'INSERT INTO reactions (answer_id, user_id, emoji) VALUES ($1, $2, $3)',
+            `INSERT INTO reactions (answer_id, user_id, emoji) VALUES ($1, $2, $3)
+             ON CONFLICT (answer_id, user_id) DO UPDATE SET emoji = $3`,
             [answerId, socket.userId, emoji]
           );
         }

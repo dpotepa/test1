@@ -13,12 +13,13 @@ interface Round {
 interface Props {
   rounds: Round[];
   onReact?: (answerId: number, emoji: string) => void;
+  currentRoundId?: number;
 }
 
-export default function SessionHistory({ rounds, onReact }: Props) {
+export default function SessionHistory({ rounds, onReact, currentRoundId }: Props) {
   const { t } = useTranslation();
 
-  const revealedRounds = rounds.filter((r) => r.status === 'revealed');
+  const revealedRounds = rounds.filter((r) => r.status === 'revealed' && r.id !== currentRoundId);
 
   if (revealedRounds.length === 0) {
     return (
