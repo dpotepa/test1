@@ -3,7 +3,8 @@
     "name": "n2mu",
     "fullName": "nice to meet you",
     "tagline": "Poznajcie się naprawdę",
-    "description": "Głębokie pytania dla par, przyjaciół, dzieci i rodziców. Wybieracie pytanie, odpowiadacie szczerze — i poznajesz drugą osobę z zupełnie nowej strony."
+    "description": "Ktoś wysłał Ci ten link, bo chce Cię lepiej poznać. Szczere pytania, szczere odpowiedzi — bez filtrów i poprawek.",
+    "loginSubtitle": "Zaloguj się i zacznij rozmowę"
   },
   "nav": {
     "lobby": "Sesje",
@@ -19,7 +20,10 @@
     "noAccount": "Nie masz konta?",
     "hasAccount": "Masz już konto?",
     "loginAction": "Zaloguj",
-    "registerAction": "Utwórz konto"
+    "registerAction": "Utwórz konto",
+    "guestAction": "Wejdź jako gość",
+    "guestNamePlaceholder": "Jak masz na imię?",
+    "guestStart": "Zaczynamy!"
   },
   "lobby": {
     "title": "Twoje sesje",
@@ -48,6 +52,7 @@
     "text": "Tekst",
     "takePhoto": "Zrób zdjęcie",
     "recordVideo": "Nagraj film",
+    "or": "lub",
     "depth": {
       "1": "Lekkie",
       "2": "Średnie",
@@ -60,7 +65,8 @@
     "partnerOnline": "Online",
     "partnerOffline": "Offline",
     "noActiveRound": "Wybierz pytanie, żeby zacząć!",
-    "history": "Historia odpowiedzi"
+    "history": "Historia odpowiedzi",
+    "shareHint": "Wyślij link znajomemu — niech dołączy do sesji"
   },
   "history": {
     "title": "Historia",

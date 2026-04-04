@@ -7,6 +7,9 @@ interface AuthSocket extends Socket {
   userId?: number;
 }
 
+// Track which users are in which rooms
+const roomUsers = new Map<string, Set<number>>();
+
 export function setupSocket(io: Server) {
   // Auth middleware
   io.use((socket: AuthSocket, next) => {
@@ -38,13 +41,36 @@ export function setupSocket(io: Server) {
         const room = `session:${sessionId}`;
         socket.join(room);
 
+        // Track user in room
+        if (!roomUsers.has(room)) {
+          roomUsers.set(room, new Set());
+        }
+        roomUsers.get(room)!.add(socket.userId!);
+
         // Get user info
         const user = await query('SELECT id, display_name FROM users WHERE id = $1', [socket.userId]);
+
+        // Tell the joining user who's already in the room
+        const usersInRoom = roomUsers.get(room)!;
+        const otherUserIds = [...usersInRoom].filter(uid => uid !== socket.userId);
+        if (otherUserIds.length > 0) {
+          // Partner is already here — tell the joining user
+          const partnerInfo = await query('SELECT id, display_name FROM users WHERE id = $1', [otherUserIds[0]]);
+          socket.emit('session:partner-joined', {
+            user: { id: partnerInfo.rows[0].id, displayName: partnerInfo.rows[0].display_name },
+          });
+        }
 
         // Notify others in the room
         socket.to(room).emit('session:partner-joined', {
           user: { id: user.rows[0].id, displayName: user.rows[0].display_name },
         });
+
+        // Update session status to active if both users are now present
+        const sess = session.rows[0];
+        if (sess.status === 'waiting' && sess.user2_id) {
+          await query("UPDATE sessions SET status = 'active' WHERE id = $1", [sessionId]);
+        }
 
         console.log(`User ${socket.userId} joined session ${sessionId}`);
       } catch (err) {
@@ -55,6 +81,15 @@ export function setupSocket(io: Server) {
     socket.on('session:leave', ({ sessionId }: { sessionId: number }) => {
       const room = `session:${sessionId}`;
       socket.leave(room);
+
+      // Remove from tracking
+      if (roomUsers.has(room)) {
+        roomUsers.get(room)!.delete(socket.userId!);
+        if (roomUsers.get(room)!.size === 0) {
+          roomUsers.delete(room);
+        }
+      }
+
       socket.to(room).emit('session:partner-left', { userId: socket.userId });
     });
 
@@ -166,6 +201,17 @@ export function setupSocket(io: Server) {
     });
 
     socket.on('disconnect', () => {
+      // Remove user from all rooms they were in
+      for (const [room, users] of roomUsers.entries()) {
+        if (users.has(socket.userId!)) {
+          users.delete(socket.userId!);
+          // Notify room that user left
+          socket.to(room).emit('session:partner-left', { userId: socket.userId });
+          if (users.size === 0) {
+            roomUsers.delete(room);
+          }
+        }
+      }
       console.log(`User ${socket.userId} disconnected`);
     });
   });

@@ -21,7 +21,7 @@ export default function SessionHistory({ rounds }: Props) {
 
   if (revealedRounds.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-400 text-sm">
+      <div className="text-center py-8 text-zinc-600 text-sm">
         {t('history.noHistory')}
       </div>
     );
@@ -29,25 +29,27 @@ export default function SessionHistory({ rounds }: Props) {
 
   return (
     <div className="space-y-4">
-      <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">
+      <h3 className="text-xs font-semibold text-zinc-600 uppercase tracking-wider">
         {t('session.history')}
       </h3>
-      {revealedRounds.map((round) => (
-        <AnswerReveal
-          key={round.id}
-          questionText={round.question_text}
-          answers={round.answers.map((a: any) => ({
-            userId: a.user_id,
-            userName: a.user_name,
-            answerType: a.answer_type,
-            text: a.text,
-            mediaUrl: a.media_url,
-            createdAt: a.created_at,
-          }))}
-          categoryName={round.category_name}
-          depthLevel={round.depth_level}
-        />
-      ))}
+      <div className="space-y-3">
+        {revealedRounds.map((round) => (
+          <AnswerReveal
+            key={round.id}
+            questionText={round.question_text}
+            answers={round.answers.map((a: any) => ({
+              userId: a.user_id,
+              userName: a.user_name,
+              answerType: a.answer_type,
+              text: a.text,
+              mediaUrl: a.media_url,
+              createdAt: a.created_at,
+            }))}
+            categoryName={round.category_name}
+            depthLevel={round.depth_level}
+          />
+        ))}
+      </div>
     </div>
   );
 }

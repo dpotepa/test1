@@ -11,7 +11,11 @@ import api from './api/client';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
-  if (loading) return <div className="min-h-dvh flex items-center justify-center text-gray-400">...</div>;
+  if (loading) return (
+    <div className="min-h-dvh flex items-center justify-center bg-zinc-950">
+      <div className="w-6 h-6 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
   if (!user) return <Navigate to="/login" />;
   return <>{children}</>;
 }
@@ -32,7 +36,11 @@ function JoinRedirect() {
       .catch(() => navigate('/'));
   }, [user, loading, inviteCode]);
 
-  return <div className="min-h-dvh flex items-center justify-center text-gray-400">Dołączanie...</div>;
+  return (
+    <div className="min-h-dvh flex items-center justify-center bg-zinc-950">
+      <div className="w-6 h-6 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
 }
 
 export default function App() {

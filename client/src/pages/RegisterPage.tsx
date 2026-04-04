@@ -27,19 +27,19 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-dvh flex flex-col items-center justify-center px-6 bg-gradient-to-b from-indigo-50 to-white">
-      <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-indigo-600 rounded-3xl mb-4 shadow-lg shadow-indigo-200">
+    <div className="min-h-dvh flex flex-col items-center justify-center px-6 bg-zinc-950">
+      <div className="w-full max-w-sm animate-slide-up">
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl mb-5 animate-float bg-gradient-to-br from-violet-600 to-fuchsia-600 shadow-2xl shadow-violet-500/30">
             <span className="text-3xl font-black text-white tracking-tighter">n2</span>
           </div>
-          <h1 className="text-4xl font-black text-gray-900 tracking-tight">{t('app.name')}</h1>
-          <p className="text-sm text-indigo-500 font-medium italic mt-1">{t('app.fullName')}</p>
+          <h1 className="text-5xl font-black text-white tracking-tight">{t('app.name')}</h1>
+          <p className="text-sm text-violet-400 font-medium italic mt-1">{t('app.fullName')}</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3">
           {error && (
-            <div className="bg-red-50 text-red-600 text-sm rounded-xl p-3 text-center">{error}</div>
+            <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm rounded-xl p-3 text-center animate-slide-down">{error}</div>
           )}
 
           <input
@@ -47,7 +47,7 @@ export default function RegisterPage() {
             placeholder={t('auth.displayName')}
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
-            className="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="w-full px-4 py-3.5 bg-zinc-900 border border-zinc-800 rounded-xl text-base text-white placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all"
           />
 
           <input
@@ -55,7 +55,7 @@ export default function RegisterPage() {
             placeholder={t('auth.username')}
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="w-full px-4 py-3.5 bg-zinc-900 border border-zinc-800 rounded-xl text-base text-white placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all"
             autoComplete="username"
           />
 
@@ -64,22 +64,22 @@ export default function RegisterPage() {
             placeholder={t('auth.password')}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl text-base focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="w-full px-4 py-3.5 bg-zinc-900 border border-zinc-800 rounded-xl text-base text-white placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all"
             autoComplete="new-password"
           />
 
           <button
             type="submit"
             disabled={loading || !username || !password || !displayName}
-            className="w-full py-3.5 bg-indigo-600 text-white font-semibold rounded-xl active:bg-indigo-700 transition-colors disabled:opacity-50 text-base"
+            className="w-full py-3.5 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-semibold rounded-xl active:scale-[0.98] transition-all disabled:opacity-40 text-base shadow-lg shadow-violet-500/25"
           >
             {t('auth.registerAction')}
           </button>
         </form>
 
-        <p className="text-center mt-6 text-sm text-gray-500">
+        <p className="text-center mt-8 text-sm text-zinc-600">
           {t('auth.hasAccount')}{' '}
-          <Link to="/login" className="text-indigo-600 font-medium">{t('auth.login')}</Link>
+          <Link to="/login" className="text-violet-400 font-medium hover:text-violet-300 transition-colors">{t('auth.login')}</Link>
         </p>
       </div>
     </div>

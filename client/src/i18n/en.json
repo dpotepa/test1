@@ -3,7 +3,8 @@
     "name": "n2mu",
     "fullName": "nice to meet you",
     "tagline": "Truly get to know each other",
-    "description": "Deep questions for couples, friends, kids and parents. Pick a question, answer honestly — and discover the other person from a whole new side."
+    "description": "Someone sent you this link because they want to get to know you better. Honest questions, honest answers — no filters, no edits.",
+    "loginSubtitle": "Log in and start the conversation"
   },
   "nav": {
     "lobby": "Sessions",
@@ -19,7 +20,10 @@
     "noAccount": "Don't have an account?",
     "hasAccount": "Already have an account?",
     "loginAction": "Log in",
-    "registerAction": "Create account"
+    "registerAction": "Create account",
+    "guestAction": "Continue as guest",
+    "guestNamePlaceholder": "What's your name?",
+    "guestStart": "Let's go!"
   },
   "lobby": {
     "title": "Your sessions",
@@ -48,6 +52,7 @@
     "text": "Text",
     "takePhoto": "Take photo",
     "recordVideo": "Record video",
+    "or": "or",
     "depth": {
       "1": "Light",
       "2": "Medium",
@@ -60,7 +65,8 @@
     "partnerOnline": "Online",
     "partnerOffline": "Offline",
     "noActiveRound": "Pick a question to start!",
-    "history": "Answer history"
+    "history": "Answer history",
+    "shareHint": "Send the link to a friend — let them join the session"
   },
   "history": {
     "title": "History",

@@ -72,6 +72,30 @@ router.post('/login', async (req: Request, res: Response) => {
   }
 });
 
+router.post('/guest', async (req: Request, res: Response) => {
+  try {
+    const { displayName } = req.body;
+
+    if (!displayName || displayName.trim().length < 1) {
+      return res.status(400).json({ error: 'Podaj swoje imię' });
+    }
+
+    const guestUsername = `guest_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    const result = await query(
+      'INSERT INTO users (username, display_name, is_guest) VALUES ($1, $2, true) RETURNING id, username, display_name',
+      [guestUsername, displayName.trim()]
+    );
+
+    const user = result.rows[0];
+    const token = jwt.sign({ userId: user.id }, config.jwtSecret, { expiresIn: '30d' });
+
+    res.status(201).json({ token, user: { id: user.id, username: user.username, displayName: user.display_name } });
+  } catch (err) {
+    console.error('Guest auth error:', err);
+    res.status(500).json({ error: 'Błąd serwera' });
+  }
+});
+
 router.get('/me', authenticateToken, async (req: AuthRequest, res: Response) => {
   try {
     const result = await query('SELECT id, username, display_name FROM users WHERE id = $1', [req.userId]);
