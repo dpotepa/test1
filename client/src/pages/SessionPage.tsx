@@ -283,7 +283,7 @@ export default function SessionPage() {
 
   const isWaitingDuo = !isParty && session.status === 'waiting' && !session.user2_id;
   const isWaitingParty = isParty && session.status === 'waiting';
-  const gameActive = session.status === 'active' || (!isParty && session.user2_id);
+  const gameActive = session.status === 'active' || (!isParty && session.user2_id) || (!isParty && isHost);
 
   // Determine whose turn it is (based on completed round count)
   // Use completedRoundCount from server when available (avoids race condition)
