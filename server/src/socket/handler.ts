@@ -10,6 +10,18 @@ interface AuthSocket extends Socket {
 // Map socket IDs to user IDs for presence tracking
 const socketUserMap = new Map<string, number>();
 
+const ALLOWED_EMOJIS = ['❤️', '😂', '😮', '👏', '🔥', '💩'];
+
+async function isSessionMember(sessionId: number, userId: number): Promise<boolean> {
+  const result = await query(
+    `SELECT 1 FROM sessions s
+     LEFT JOIN session_participants sp ON sp.session_id = s.id AND sp.user_id = $2
+     WHERE s.id = $1 AND (s.user1_id = $2 OR s.user2_id = $2 OR sp.user_id IS NOT NULL)`,
+    [sessionId, userId]
+  );
+  return result.rows.length > 0;
+}
+
 function getUsersInRoom(io: Server, room: string): number[] {
   const socketIds = io.sockets.adapter.rooms.get(room);
   if (!socketIds) return [];
@@ -109,7 +121,10 @@ export function setupSocket(io: Server) {
       }
     });
 
-    socket.on('session:started', ({ sessionId }: { sessionId: number }) => {
+    socket.on('session:started', async ({ sessionId }: { sessionId: number }) => {
+      // Only host can broadcast session:started
+      const session = await query('SELECT user1_id FROM sessions WHERE id = $1', [sessionId]);
+      if (session.rows.length === 0 || session.rows[0].user1_id !== socket.userId) return;
       const room = `session:${sessionId}`;
       socket.to(room).emit('session:started');
     });
@@ -122,6 +137,12 @@ export function setupSocket(io: Server) {
 
     socket.on('round:pick', async ({ sessionId, questionId }: { sessionId: number; questionId: number }) => {
       try {
+        // Verify user belongs to this session
+        if (!await isSessionMember(sessionId, socket.userId!)) {
+          socket.emit('error', { message: 'Nie masz dostępu do tej sesji' });
+          return;
+        }
+
         // Check if there's already an active round
         const activeRound = await query(
           "SELECT id FROM rounds WHERE session_id = $1 AND status = 'answering'",
@@ -207,6 +228,12 @@ export function setupSocket(io: Server) {
         const roundResult = await query('SELECT * FROM rounds WHERE id = $1', [roundId]);
         if (roundResult.rows.length === 0) return;
         const round = roundResult.rows[0];
+
+        // Verify user belongs to this session
+        if (!await isSessionMember(round.session_id, socket.userId!)) {
+          socket.emit('error', { message: 'Nie masz dostępu do tej sesji' });
+          return;
+        }
 
         // Check user hasn't already answered
         const existing = await query(
@@ -307,6 +334,27 @@ export function setupSocket(io: Server) {
 
     socket.on('reaction:toggle', async ({ answerId, emoji, sessionId }: { answerId: number; emoji: string; sessionId: number }) => {
       try {
+        // Validate emoji
+        if (!ALLOWED_EMOJIS.includes(emoji)) {
+          socket.emit('error', { message: 'Niedozwolony emoji' });
+          return;
+        }
+
+        // Verify user belongs to session and answer belongs to that session
+        const access = await query(
+          `SELECT 1 FROM answers a
+           JOIN rounds r ON a.round_id = r.id
+           JOIN sessions s ON r.session_id = s.id
+           LEFT JOIN session_participants sp ON sp.session_id = s.id AND sp.user_id = $2
+           WHERE a.id = $1 AND s.id = $3
+           AND (s.user1_id = $2 OR s.user2_id = $2 OR sp.user_id IS NOT NULL)`,
+          [answerId, socket.userId, sessionId]
+        );
+        if (access.rows.length === 0) {
+          socket.emit('error', { message: 'Brak dostępu' });
+          return;
+        }
+
         const current = await query(
           'SELECT emoji FROM reactions WHERE answer_id = $1 AND user_id = $2',
           [answerId, socket.userId]

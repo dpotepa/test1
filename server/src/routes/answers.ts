@@ -94,6 +94,17 @@ router.get('/rounds/:roundId', authenticateToken, async (req: AuthRequest, res: 
 
     const r = round.rows[0];
 
+    // Verify user belongs to this round's session
+    const access = await query(
+      `SELECT 1 FROM sessions s
+       LEFT JOIN session_participants sp ON sp.session_id = s.id AND sp.user_id = $2
+       WHERE s.id = $1 AND (s.user1_id = $2 OR s.user2_id = $2 OR sp.user_id IS NOT NULL)`,
+      [r.session_id, req.userId]
+    );
+    if (access.rows.length === 0) {
+      return res.status(403).json({ error: 'Brak dostępu' });
+    }
+
     // Only return answers if revealed
     if (r.status === 'revealed') {
       const answers = await query(

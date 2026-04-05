@@ -5,25 +5,33 @@ import crypto from 'crypto';
 import { config } from '../config';
 import { authenticateToken, AuthRequest } from '../middleware/auth';
 
+const ALLOWED_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.gif', '.webp', '.mp4', '.webm', '.wav', '.m4a', '.ogg', '.mp3']);
+const ALLOWED_MIMES = /^(image\/(jpeg|png|gif|webp)|video\/(mp4|webm)|audio\/(wav|mp4|mpeg|ogg|webm|x-m4a))$/;
+
 const storage = multer.diskStorage({
   destination: config.uploadDir,
   filename: (_req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const name = crypto.randomBytes(16).toString('hex') + ext;
+    const ext = path.extname(file.originalname).toLowerCase();
+    const safeExt = ALLOWED_EXTENSIONS.has(ext) ? ext : '.bin';
+    const name = crypto.randomBytes(16).toString('hex') + safeExt;
     cb(null, name);
   },
 });
 
 const upload = multer({
   storage,
-  limits: { fileSize: 100 * 1024 * 1024 }, // 100MB for videos
+  limits: { fileSize: 25 * 1024 * 1024 }, // 25MB
   fileFilter: (_req, file, cb) => {
-    const allowed = /^(image|video|audio)\//;
-    if (allowed.test(file.mimetype)) {
-      cb(null, true);
-    } else {
-      cb(new Error('Dozwolone są tylko zdjęcia, filmy i nagrania audio'));
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (!ALLOWED_EXTENSIONS.has(ext)) {
+      cb(new Error('Niedozwolone rozszerzenie pliku'));
+      return;
     }
+    if (!ALLOWED_MIMES.test(file.mimetype)) {
+      cb(new Error('Niedozwolony typ pliku'));
+      return;
+    }
+    cb(null, true);
   },
 });
 

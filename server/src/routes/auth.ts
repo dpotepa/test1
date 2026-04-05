@@ -1,13 +1,30 @@
 import { Router, Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import rateLimit from 'express-rate-limit';
 import { query } from '../db';
 import { config } from '../config';
 import { authenticateToken, AuthRequest } from '../middleware/auth';
 
 const router = Router();
 
-router.post('/register', async (req: Request, res: Response) => {
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10,
+  message: { error: 'Zbyt wiele prób, spróbuj ponownie za 15 minut' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const registerLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 5,
+  message: { error: 'Zbyt wiele prób rejestracji, spróbuj ponownie za godzinę' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+router.post('/register', registerLimiter, async (req: Request, res: Response) => {
   try {
     const { username, password, displayName } = req.body;
 
@@ -48,7 +65,7 @@ router.post('/register', async (req: Request, res: Response) => {
   }
 });
 
-router.post('/login', async (req: Request, res: Response) => {
+router.post('/login', authLimiter, async (req: Request, res: Response) => {
   try {
     const { username, password } = req.body;
 
@@ -76,7 +93,7 @@ router.post('/login', async (req: Request, res: Response) => {
   }
 });
 
-router.post('/guest', async (req: Request, res: Response) => {
+router.post('/guest', registerLimiter, async (req: Request, res: Response) => {
   try {
     const { displayName } = req.body;
 

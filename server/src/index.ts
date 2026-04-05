@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 import http from 'http';
 import path from 'path';
 import { Server } from 'socket.io';
@@ -14,19 +15,29 @@ import uploadRoutes from './routes/uploads';
 const app = express();
 const server = http.createServer(app);
 
+const corsOrigin = config.clientUrl || (process.env.NODE_ENV === 'production' ? false : true);
+
 const io = new Server(server, {
   cors: {
-    origin: config.clientUrl || true,
+    origin: corsOrigin,
     methods: ['GET', 'POST'],
   },
 });
 
 // Middleware
-app.use(cors({ origin: config.clientUrl || true }));
-app.use(express.json());
+app.use(helmet({
+  contentSecurityPolicy: false, // handled by frontend framework
+  crossOriginEmbedderPolicy: false,
+}));
+app.use(cors({ origin: corsOrigin }));
+app.use(express.json({ limit: '1mb' }));
 
-// Static uploads
-app.use('/api/uploads', express.static(config.uploadDir));
+// Static uploads — serve with nosniff to prevent MIME-type abuse
+app.use('/api/uploads', (_req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Content-Security-Policy', "default-src 'none'; img-src 'self'; media-src 'self'");
+  next();
+}, express.static(config.uploadDir));
 
 // Routes
 app.use('/api/auth', authRoutes);
